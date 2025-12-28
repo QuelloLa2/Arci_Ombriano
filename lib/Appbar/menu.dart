@@ -1,60 +1,22 @@
 import 'package:flutter/material.dart';
 
-class TopBar extends StatefulWidget implements PreferredSizeWidget {
-  const TopBar({super.key});
+class MenuAppBar extends StatelessWidget {
+  const MenuAppBar({super.key});
 
-  @override
-  State<TopBar> createState() => _TopBarState();
-
-  @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
-}
-
-class _TopBarState extends State<TopBar> with SingleTickerProviderStateMixin {
-
-  //Animated Icon Var
-  late final AnimationController _animationControll;
-  bool _isAnimating = false;
-
-
-  //AppBar build
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      leading: _menubutton(),
-      centerTitle: true,
-      title: const Text("Text"),
+    return Column(
+      children: [
+        Container(width: double.infinity, height: 50, color: Colors.cyan),
+        Container(width: double.infinity, height: 50, color: Colors.blue),
+        Container(width: double.infinity, height: 50, color: Colors.teal),
+        Expanded(
+          child: Container(
+            width: double.infinity,
+            color: Color.fromARGB(160, 255, 255, 255),
+          ),
+        ),
+      ],
     );
   }
-
-
-  // Animated Icon 
-  Widget _menubutton() {
-    return IconButton(
-      icon: AnimatedIcon(
-        icon: AnimatedIcons.menu_close,
-        progress: _animationControll,
-        color: Colors.black,
-      ),
-      onPressed: () {
-        setState(() {
-          _isAnimating = !_isAnimating;
-          _isAnimating
-              ? _animationControll.forward()
-              : _animationControll.reverse();
-        });
-      },
-    );
-  }
-
-  //Icon Animation
-  @override
-  void initState() {
-    super.initState();
-    _animationControll = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 500),
-    );
-  }
-
 }

@@ -1,6 +1,8 @@
+import 'package:arci_ombriano/Appbar/menu.dart';
+import 'package:arci_ombriano/Eventi/event_page.dart';
 import 'package:arci_ombriano/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:arci_ombriano/Appbar/menu.dart';
+import 'package:arci_ombriano/Appbar/appbar.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,16 +31,21 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  bool _menulist = false;
+
+  Widget main = EventPage();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: TopBar(),
-      body: Container(
-        height: 100,
-        width: 100,
-        color: Colors.teal,
-      )
+      appBar: TopBar(onPressed: menuListState),
+      body: Stack(children: [EventPage(), if (_menulist) MenuAppBar()]),
     );
+  }
+
+  void menuListState() {
+    setState(() {
+      _menulist = !_menulist;
+    });
   }
 }
