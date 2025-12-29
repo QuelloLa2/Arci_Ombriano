@@ -13,7 +13,7 @@ class _EventPageState extends State<EventPage> {
     return Center(
       child: Container(
         width: 100,
-        height: 100,
+        height: 1000,
         color: Colors.red,
       ),
     );

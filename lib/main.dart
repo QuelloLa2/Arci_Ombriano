@@ -39,7 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: TopBar(onPressed: menuListState),
-      body: Stack(children: [EventPage(), if (_menulist) MenuAppBar()]),
+      body: Stack(children: [main, if (_menulist) MenuAppBar()]),
     );
   }
 
