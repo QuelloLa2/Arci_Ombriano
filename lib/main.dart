@@ -1,4 +1,5 @@
 import 'package:arci_ombriano/Appbar/menu.dart';
+import 'package:arci_ombriano/Calendar/calendar_page.dart';
 import 'package:arci_ombriano/Eventi/event_page.dart';
 import 'package:arci_ombriano/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -31,21 +32,30 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  bool _menulist = false;
 
-  Widget main = EventPage();
+  List<StatefulWidget>pages = [EventPage(), CalendarPage()];
+  int _activepage = 0;
+  
+  bool _menulist = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: TopBar(onPressed: menuListState),
-      body: Stack(children: [main, if (_menulist) MenuAppBar()]),
+      body: Stack(children: [pages[_activepage], if (_menulist) MenuAppBar(changePage: changePage)]),
     );
   }
 
   void menuListState() {
     setState(() {
       _menulist = !_menulist;
+    });
+  }
+
+  void changePage(int index) {
+    setState(() {
+      _activepage = index;
+      _menulist = false;
     });
   }
 }

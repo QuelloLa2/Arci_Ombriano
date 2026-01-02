@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
-//TODO: set route for the pages
-
 class MenuAppBar extends StatelessWidget {
-  const MenuAppBar({super.key});
+
+  final Function(int) changePage;
+  final Color _transparency = Color.fromARGB(160, 255, 255, 255);
+
+  MenuAppBar({super.key, required this.changePage});
 
   @override
   Widget build(BuildContext context) {
@@ -12,11 +14,9 @@ class MenuAppBar extends StatelessWidget {
     return Column(
       children: [
         _box(space),
-        _selectpage("1", context),
+        _selectpage("Event", context, 0),
         _box(space),
-        _selectpage("2", context),
-        _box(space),
-        _selectpage("3", context),
+        _selectpage("Calendar", context, 1),
         Expanded(child: _box(double.infinity)),
       ],
     );
@@ -24,17 +24,17 @@ class MenuAppBar extends StatelessWidget {
 
   // Creating button
 
-  Widget _selectpage(String pageName, BuildContext context) {
+  Widget _selectpage(String pageName, BuildContext context, int index) {
     final theme = AppBarTheme.of(context);
 
     return Container(
-      color: Color.fromARGB(160, 255, 255, 255),
+      color: _transparency,
       padding: EdgeInsets.symmetric(horizontal: 15),
       child: SizedBox(
         width: double.infinity,
         height: 75,
         child: TextButton(
-          onPressed: () {},
+          onPressed: () => changePage(index),
           style: TextButton.styleFrom(
             backgroundColor: theme.backgroundColor,
             foregroundColor: theme.foregroundColor,
@@ -52,7 +52,7 @@ class MenuAppBar extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: height,
-      color: const Color.fromARGB(160, 255, 255, 255),
+      color: _transparency,
     );
   }
 }
