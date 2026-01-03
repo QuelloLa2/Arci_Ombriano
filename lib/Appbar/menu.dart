@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class MenuAppBar extends StatelessWidget {
-
   final Function(int) changePage;
   final Color _transparency = Color.fromARGB(160, 255, 255, 255);
 
@@ -17,6 +16,8 @@ class MenuAppBar extends StatelessWidget {
         _selectpage("Event", context, 0),
         _box(space),
         _selectpage("Calendar", context, 1),
+        _box(space),
+        _selectpage("Account", context, 2),
         Expanded(child: _box(double.infinity)),
       ],
     );
@@ -46,7 +47,7 @@ class MenuAppBar extends StatelessWidget {
     );
   }
 
-  // Container for spacing 
+  // Container for spacing
 
   Widget _box(double height) {
     return Container(

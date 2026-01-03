@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class TopBar extends StatefulWidget implements PreferredSizeWidget {
   final VoidCallback onPressed;
+  final bool isOpen;
 
-  const TopBar({super.key, required this.onPressed});
+  const TopBar({super.key, required this.onPressed, required this.isOpen});
 
   @override
   State<TopBar> createState() => _TopBarState();
@@ -13,41 +14,10 @@ class TopBar extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _TopBarState extends State<TopBar> with SingleTickerProviderStateMixin {
-  //Animated Icon Var
   late final AnimationController _animationControll;
-  bool _isAnimating = false;
 
-  //AppBar build
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      leading: _menubutton(),
-      centerTitle: true,
-      title: const Text("Text"),
-    );
-  }
 
-  // Animated Icon
-  Widget _menubutton() {
-    return IconButton(
-      icon: AnimatedIcon(
-        icon: AnimatedIcons.menu_close,
-        progress: _animationControll,
-      ),
-      onPressed: () {
-        setState(() {
-          _isAnimating = !_isAnimating;
-          _isAnimating
-              ? _animationControll.forward()
-              : _animationControll.reverse();
-
-          widget.onPressed();
-        });
-      },
-    );
-  }
-
-  //Icon Animation
+  //Create widget
   @override
   void initState() {
     super.initState();
@@ -55,11 +25,40 @@ class _TopBarState extends State<TopBar> with SingleTickerProviderStateMixin {
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
+    
+    if (widget.isOpen) _animationControll.value = 1.0;
+  }
+
+  //Rebuild widget on condition
+  @override
+  void didUpdateWidget(TopBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    
+    if (widget.isOpen != oldWidget.isOpen) {
+      widget.isOpen 
+          ? _animationControll.forward() 
+          : _animationControll.reverse();
+    }
   }
 
   @override
   void dispose() {
     _animationControll.dispose();
     super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      leading: IconButton(
+        icon: AnimatedIcon(
+          icon: AnimatedIcons.menu_close,
+          progress: _animationControll,
+        ),
+        onPressed: widget.onPressed, 
+      ),
+      centerTitle: true,
+      title: const Text("Text"),
+    );
   }
 }
