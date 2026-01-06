@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class TopBar extends StatefulWidget implements PreferredSizeWidget {
   final VoidCallback onPressed;
   final bool isOpen;
+  final String titlePage;
 
-  const TopBar({super.key, required this.onPressed, required this.isOpen});
+  const TopBar({
+    super.key,
+    required this.onPressed,
+    required this.isOpen,
+    required this.titlePage,
+  });
 
   @override
   State<TopBar> createState() => _TopBarState();
@@ -16,7 +23,6 @@ class TopBar extends StatefulWidget implements PreferredSizeWidget {
 class _TopBarState extends State<TopBar> with SingleTickerProviderStateMixin {
   late final AnimationController _animationControll;
 
-
   //Create widget
   @override
   void initState() {
@@ -25,7 +31,7 @@ class _TopBarState extends State<TopBar> with SingleTickerProviderStateMixin {
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
-    
+
     if (widget.isOpen) _animationControll.value = 1.0;
   }
 
@@ -33,10 +39,10 @@ class _TopBarState extends State<TopBar> with SingleTickerProviderStateMixin {
   @override
   void didUpdateWidget(TopBar oldWidget) {
     super.didUpdateWidget(oldWidget);
-    
+
     if (widget.isOpen != oldWidget.isOpen) {
-      widget.isOpen 
-          ? _animationControll.forward() 
+      widget.isOpen
+          ? _animationControll.forward()
           : _animationControll.reverse();
     }
   }
@@ -55,10 +61,13 @@ class _TopBarState extends State<TopBar> with SingleTickerProviderStateMixin {
           icon: AnimatedIcons.menu_close,
           progress: _animationControll,
         ),
-        onPressed: widget.onPressed, 
+        onPressed: widget.onPressed,
       ),
       centerTitle: true,
-      title: const Text("Text"),
+      title: Text(
+        widget.titlePage,
+        style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 32),
+      ),
     );
   }
 }

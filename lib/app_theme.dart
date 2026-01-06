@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 final appTheme = ThemeData(
   colorScheme: ColorScheme(
@@ -11,7 +10,7 @@ final appTheme = ThemeData(
     error: Color(0xFFD5373A), 
     onError: Color(0xFFFFF8EE), 
     surface: Color(0xFFFFFFFF),
-    onSurface: Color(0xFFFFF8EE)
+    onSurface: Color(0xFF171717)
     ),
 
   appBarTheme: AppBarTheme(
@@ -19,10 +18,5 @@ final appTheme = ThemeData(
     foregroundColor: Color(0xFF171717),
     elevation: 0,
     surfaceTintColor: Colors.transparent,
-  ),
-
-  textTheme: TextTheme(
-    headlineMedium: GoogleFonts.lato(fontSize: 36, fontWeight: FontWeight.bold),
-    bodyMedium: GoogleFonts.lato(fontSize: 16, fontWeight: FontWeight.w500)
   )
 );
