@@ -66,7 +66,7 @@ class _TopBarState extends State<TopBar> with SingleTickerProviderStateMixin {
       centerTitle: true,
       title: Text(
         widget.titlePage,
-        style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 32),
+        style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 26),
       ),
     );
   }
