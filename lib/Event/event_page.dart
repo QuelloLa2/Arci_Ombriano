@@ -11,7 +11,7 @@ class EventPage extends StatefulWidget {
 class _EventPageState extends State<EventPage> {
   @override
   Widget build(BuildContext context) {
-    Color mainText = Theme.of(context).colorScheme.primary;
+    Color mainColor = Theme.of(context).colorScheme.primary;
     Color dateColor = Color(0xFF1A0704);
 
     String text =
@@ -21,11 +21,11 @@ class _EventPageState extends State<EventPage> {
 
     return Column(
       children: [
-        _titleEvent(mainText),
+        _titleEvent(mainColor),
         const SizedBox(height: 10),
         _dateTitle("-Venerdì 14/04 ", dateColor),
         const SizedBox(height: 10),
-        _eventButton("Grassi's Night", text, "19:00", works),
+        _eventButton("Grassi's Night", text, "19:00", works, mainColor),
       ],
     );
   }
@@ -35,11 +35,11 @@ class _EventPageState extends State<EventPage> {
     return Container(
       width: double.infinity,
       alignment: Alignment.centerLeft,
-      padding: EdgeInsets.only(top: 15,left: 20),
+      padding: EdgeInsets.only(top: 15, left: 20),
       child: Text(
         "Prossimi Eventi",
         style: GoogleFonts.poppins(
-          fontSize: 32,
+          fontSize: 42,
           fontWeight: FontWeight.bold,
           color: color,
           letterSpacing: -0.7,
@@ -57,7 +57,7 @@ class _EventPageState extends State<EventPage> {
       child: Text(
         date,
         style: GoogleFonts.poppins(
-          fontSize: 20,
+          fontSize: 24,
           fontWeight: FontWeight.w600,
           color: color,
           letterSpacing: -0.7,
@@ -67,11 +67,18 @@ class _EventPageState extends State<EventPage> {
   }
 
   //Event main details
-  Widget _eventButton(String title, String description, String time, List<String> volunteers) {
+  Widget _eventButton(
+    String title,
+    String description,
+    String time,
+    List<String> volunteers,
+    Color primary,
+  ) {
     return Container(
       margin: const EdgeInsets.only(left: 14, right: 14, bottom: 14),
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.only(left: 14, right: 14, top: 14, bottom: 8),
       decoration: BoxDecoration(
+        color: Color.fromARGB(255, 245, 245, 245),
         border: Border.all(color: const Color(0x68232120), width: 2),
         borderRadius: BorderRadius.circular(10),
       ),
@@ -79,20 +86,17 @@ class _EventPageState extends State<EventPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-
           //Title Event
-
           Text(
             title,
             style: GoogleFonts.poppins(
-              fontSize: 20,
+              fontSize: 28,
               fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 6),
 
           //Description
-
           Text(
             description,
             style: GoogleFonts.poppins(
@@ -100,25 +104,64 @@ class _EventPageState extends State<EventPage> {
               fontWeight: FontWeight.w500,
             ),
             maxLines: 3,
-            overflow: TextOverflow.ellipsis
+            overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 6),
 
           //Volunteers
-
           Row(
-            spacing: 15,
+            spacing: 25,
             children: volunteers.map((work) => textVolunteer(work)).toList(),
           ),
           const SizedBox(height: 6),
 
-          // Time
-
           Row(
             children: [
-              Icon(Icons.access_time, size: 16, color: Colors.black),
-              const SizedBox(width: 6),
-              Text(time, style: GoogleFonts.poppins(fontSize: 16)),
+              const SizedBox(width: 10),
+
+              // Time
+              Icon(Icons.access_time, size: 24, color: Color(0xFF000000)),
+              const SizedBox(width: 8),
+              Text(
+                time,
+                style: GoogleFonts.poppins(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+
+              // Info
+              Expanded(child: SizedBox()),
+              SizedBox(
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStatePropertyAll<Color>(
+                      Color(0xFFE6E6E6),
+                    ),
+                    elevation: WidgetStatePropertyAll<double>(2),
+                    shadowColor: WidgetStatePropertyAll<Color>(primary),
+                  ),
+                  onPressed: null,
+                  child: Row(
+                    children: [
+                      Text(
+                        "Info",
+                        style: GoogleFonts.poppins(
+                          fontSize: 19,
+                          fontWeight: FontWeight.w500,
+                          color: primary,
+                        ),
+                      ),
+                      Icon(
+                        Icons.keyboard_arrow_right_rounded,
+                        size: 19,
+                        color: primary,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
             ],
           ),
         ],
@@ -126,14 +169,13 @@ class _EventPageState extends State<EventPage> {
     );
   }
 
-  Row textVolunteer(String data){
+  Row textVolunteer(String data) {
     return Row(
       children: [
-        Icon(Icons.circle_outlined, color: Colors.black),
+        Icon(Icons.radio_button_checked_outlined, color: Colors.black),
         SizedBox(width: 3),
-        Text(data, style: GoogleFonts.poppins(fontSize: 18)),
+        Text(data, style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.w500)),
       ],
     );
   }
-
 }
