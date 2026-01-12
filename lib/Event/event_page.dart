@@ -17,13 +17,15 @@ class _EventPageState extends State<EventPage> {
     String text =
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
 
+    List<String> works = ["Cuoco", "Audio", "Aiuto"];
+
     return Column(
       children: [
         _titleEvent(mainText),
         const SizedBox(height: 10),
         _dateTitle("-Venerdì 14/04 ", dateColor),
         const SizedBox(height: 10),
-        _eventButton("Grassi's Night", text, "19:00"),
+        _eventButton("Grassi's Night", text, "19:00", works),
       ],
     );
   }
@@ -65,7 +67,7 @@ class _EventPageState extends State<EventPage> {
   }
 
   //Event main details
-  Widget _eventButton(String title, String description, String time) {
+  Widget _eventButton(String title, String description, String time, List<String> volunteers) {
     return Container(
       margin: const EdgeInsets.only(left: 14, right: 14, bottom: 14),
       padding: const EdgeInsets.all(14),
@@ -106,14 +108,7 @@ class _EventPageState extends State<EventPage> {
 
           Row(
             spacing: 15,
-            children: [
-              iconVolunteer(),
-              textVolunteer("Cuoco"),
-              iconVolunteer(),
-              textVolunteer("Cuoco"),
-              iconVolunteer(),
-              textVolunteer("Cuoco")
-            ],
+            children: volunteers.map((work) => textVolunteer(work)).toList(),
           ),
           const SizedBox(height: 6),
 
@@ -131,12 +126,14 @@ class _EventPageState extends State<EventPage> {
     );
   }
 
-  Text textVolunteer(String data){
-    return Text(data, style: GoogleFonts.poppins(fontSize: 18));
-  }
-
-  Icon iconVolunteer(){
-    return Icon(Icons.circle_outlined, color: Colors.black,);
+  Row textVolunteer(String data){
+    return Row(
+      children: [
+        Icon(Icons.circle_outlined, color: Colors.black),
+        SizedBox(width: 3),
+        Text(data, style: GoogleFonts.poppins(fontSize: 18)),
+      ],
+    );
   }
 
 }
