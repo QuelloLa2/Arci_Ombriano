@@ -33,8 +33,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<StatefulWidget> pages = [EventPage(), CalendarPage(), AccountPage()];
-  List<String> titleText = ["Eventi","Calendario","Account"];
+  List<String> titleText = ["Eventi", "Calendario", "Account"];
   int _activepage = 0;
 
   bool _menulist = false;
@@ -42,10 +41,17 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: TopBar(onPressed: menuListState, isOpen: _menulist, titlePage: titleText[_activepage],),
+      appBar: TopBar(
+        onPressed: menuListState,
+        isOpen: _menulist,
+        titlePage: titleText[_activepage],
+      ),
       body: Stack(
         children: [
-          pages[_activepage],
+          IndexedStack(
+            index: _activepage,
+            children: [EventPage(), CalendarPage(), AccountPage()],
+          ),
           if (_menulist) MenuAppBar(changePage: changePage),
         ],
       ),

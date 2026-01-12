@@ -20,7 +20,9 @@ class _EventPageState extends State<EventPage> {
     return Column(
       children: [
         _titleEvent(mainText),
+        const SizedBox(height: 10),
         _dateTitle("-Venerdì 14/04 ", dateColor),
+        const SizedBox(height: 10),
         _eventButton("Grassi's Night", text, "19:00"),
       ],
     );
@@ -29,10 +31,9 @@ class _EventPageState extends State<EventPage> {
   // Title
   Widget _titleEvent(Color color) {
     return Container(
-      height: 50,
       width: double.infinity,
       alignment: Alignment.centerLeft,
-      padding: EdgeInsets.only(left: 20),
+      padding: EdgeInsets.only(top: 15,left: 20),
       child: Text(
         "Prossimi Eventi",
         style: GoogleFonts.poppins(
@@ -48,10 +49,9 @@ class _EventPageState extends State<EventPage> {
   // Title date
   Widget _dateTitle(String date, Color color) {
     return Container(
-      height: 50,
       width: double.infinity,
       alignment: Alignment.centerLeft,
-      padding: EdgeInsets.only(left: 40),
+      padding: EdgeInsets.only(left: 35),
       child: Text(
         date,
         style: GoogleFonts.poppins(
@@ -65,55 +65,78 @@ class _EventPageState extends State<EventPage> {
   }
 
   //Event main details
-  Widget _eventButton(String titleEvent, String description, String timeEvent) {
-    final double maxHeight = 175;
-    final double heightTitle = 30;
-    final double heightDesc = 90;
-    final double heightTime = 30;
-
+  Widget _eventButton(String title, String description, String time) {
     return Container(
-      height: maxHeight,
-      margin: EdgeInsets.all(14),
-      padding: EdgeInsets.all(10),
+      margin: const EdgeInsets.only(left: 14, right: 14, bottom: 14),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        border: BoxBorder.all(color: Color(0x68232120), width: 2),
-        borderRadius: BorderRadius.all(Radius.circular(10)),
+        border: Border.all(color: const Color(0x68232120), width: 2),
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            height: heightTitle,
-            child: Text(
-              titleEvent,
-              style: GoogleFonts.poppins(
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
-              ),
+
+          //Title Event
+
+          Text(
+            title,
+            style: GoogleFonts.poppins(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
             ),
           ),
-          Container(
-            height: heightDesc,
-            child: Text(
-              description,
-              style: GoogleFonts.poppins(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
+          const SizedBox(height: 6),
+
+          //Description
+
+          Text(
+            description,
+            style: GoogleFonts.poppins(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
             ),
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis
           ),
-          Container(
-            height: heightTime,
-            child: ListTile(
-              minTileHeight: -10,
-              leading: Text(
-                timeEvent,
-                style: GoogleFonts.poppins(fontSize: 16),
-              ),
-            ),
+          const SizedBox(height: 6),
+
+          //Volunteers
+
+          Row(
+            spacing: 15,
+            children: [
+              iconVolunteer(),
+              textVolunteer("Cuoco"),
+              iconVolunteer(),
+              textVolunteer("Cuoco"),
+              iconVolunteer(),
+              textVolunteer("Cuoco")
+            ],
+          ),
+          const SizedBox(height: 6),
+
+          // Time
+
+          Row(
+            children: [
+              Icon(Icons.access_time, size: 16, color: Colors.black),
+              const SizedBox(width: 6),
+              Text(time, style: GoogleFonts.poppins(fontSize: 16)),
+            ],
           ),
         ],
       ),
     );
   }
+
+  Text textVolunteer(String data){
+    return Text(data, style: GoogleFonts.poppins(fontSize: 18));
+  }
+
+  Icon iconVolunteer(){
+    return Icon(Icons.circle_outlined, color: Colors.black,);
+  }
+
 }
