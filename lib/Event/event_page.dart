@@ -147,8 +147,10 @@ class _EventPageState extends State<EventPage> {
                   onPressed: () {
                     Navigator.of(context, rootNavigator: true).push(
                       MaterialPageRoute(
-                        builder: (_) =>
-                            InformationPage(titleEvent: title),
+                        builder: (_) => InformationPage(
+                          titleEvent: title,
+                          descEvent: description,
+                        ),
                       ),
                     );
                   },
