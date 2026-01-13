@@ -1,3 +1,4 @@
+import 'package:arci_ombriano/Event/info_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -14,6 +15,8 @@ class _EventPageState extends State<EventPage> {
     Color mainColor = Theme.of(context).colorScheme.primary;
     Color dateColor = Color(0xFF1A0704);
 
+    String titleEvent = "Grassi's Night";
+
     String text =
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
 
@@ -22,10 +25,10 @@ class _EventPageState extends State<EventPage> {
     return Column(
       children: [
         _titleEvent(mainColor),
-        const SizedBox(height: 10),
+        const SizedBox(height: 25),
         _dateTitle("-Venerdì 14/04 ", dateColor),
-        const SizedBox(height: 10),
-        _eventButton("Grassi's Night", text, "19:00", works, mainColor),
+        const SizedBox(height: 15),
+        _eventButton(titleEvent, text, "19:00", works, mainColor),
       ],
     );
   }
@@ -110,7 +113,7 @@ class _EventPageState extends State<EventPage> {
 
           //Volunteers
           Row(
-            spacing: 25,
+            spacing: 20,
             children: volunteers.map((work) => textVolunteer(work)).toList(),
           ),
           const SizedBox(height: 6),
@@ -135,13 +138,20 @@ class _EventPageState extends State<EventPage> {
               SizedBox(
                 child: ElevatedButton(
                   style: ButtonStyle(
-                    backgroundColor: WidgetStatePropertyAll<Color>(
+                    backgroundColor: const WidgetStatePropertyAll<Color>(
                       Color(0xFFE6E6E6),
                     ),
-                    elevation: WidgetStatePropertyAll<double>(2),
+                    elevation: const WidgetStatePropertyAll<double>(2),
                     shadowColor: WidgetStatePropertyAll<Color>(primary),
                   ),
-                  onPressed: null,
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true).push(
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            InformationPage(titleEvent: title),
+                      ),
+                    );
+                  },
                   child: Row(
                     children: [
                       Text(
@@ -174,7 +184,10 @@ class _EventPageState extends State<EventPage> {
       children: [
         Icon(Icons.radio_button_checked_outlined, color: Colors.black),
         SizedBox(width: 3),
-        Text(data, style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.w500)),
+        Text(
+          data,
+          style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.w500),
+        ),
       ],
     );
   }
