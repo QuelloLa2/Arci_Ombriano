@@ -150,6 +150,7 @@ class _EventPageState extends State<EventPage> {
                         builder: (_) => InformationPage(
                           titleEvent: title,
                           descEvent: description,
+                          listVolunteers: volunteers,
                         ),
                       ),
                     );
