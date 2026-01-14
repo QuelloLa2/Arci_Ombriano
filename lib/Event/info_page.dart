@@ -18,8 +18,14 @@ class InformationPage extends StatefulWidget {
 }
 
 class _InformationPageState extends State<InformationPage> {
+  Map<String, bool> mapIsSelected = {};
+
   @override
   Widget build(BuildContext context) {
+    for (int i = 0; i < widget.listVolunteers.length; i++) {
+      mapIsSelected.addAll({widget.listVolunteers[i]: false});
+    }
+
     return Scaffold(appBar: _appBar(), body: _body());
   }
 
@@ -77,13 +83,12 @@ class _InformationPageState extends State<InformationPage> {
   // Button Volunteer
 
   Widget _buttonVolunteer(String volunteer) {
+    bool isSelected = mapIsSelected[volunteer]!;
+
     return Container(
       height: 60,
       padding: EdgeInsets.only(bottom: 10),
       child: ElevatedButton(
-        onPressed: () {
-          print(volunteer);
-        },
         style: ElevatedButton.styleFrom(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
@@ -93,11 +98,26 @@ class _InformationPageState extends State<InformationPage> {
         ),
         child: Row(
           children: [
-            Icon(Icons.circle_outlined, size: 32),
+            isSelected
+                ? Icon(Icons.circle, size: 32)
+                : Icon(Icons.circle_outlined, size: 32),
             SizedBox(width: 10),
-            Text(volunteer, style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.w600)),
+            Text(
+              volunteer,
+              style: GoogleFonts.poppins(
+                fontSize: 22,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ],
         ),
+        onPressed: () {
+          setState(() {
+            mapIsSelected.updateAll((work, _) => work == volunteer);
+            isSelected = mapIsSelected[volunteer]!;
+            print(isSelected);
+          });
+        },
       ),
     );
   }
