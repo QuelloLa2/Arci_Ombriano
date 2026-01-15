@@ -20,7 +20,11 @@ class _EventPageState extends State<EventPage> {
     String text =
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
 
-    List<String> works = ["Cuoco", "Audio", "Aiuto"];
+    Map<String, Map<String, int>> mapVolunteers = {
+      'Cuoco': {'Current': 1, 'Max': 2},
+      'Audio': {'Current': 1, 'Max': 3},
+      'Aiuto': {'Current': 1, 'Max': 4},
+    };
 
     return Column(
       children: [
@@ -28,7 +32,7 @@ class _EventPageState extends State<EventPage> {
         const SizedBox(height: 25),
         _dateTitle("-Venerdì 14/04 ", dateColor),
         const SizedBox(height: 15),
-        _eventButton(titleEvent, text, "19:00", works, mainColor),
+        _eventButton(titleEvent, text, "19:00", mapVolunteers, mainColor),
       ],
     );
   }
@@ -74,14 +78,14 @@ class _EventPageState extends State<EventPage> {
     String title,
     String description,
     String time,
-    List<String> volunteers,
+    Map<String, Map<String, int>> mapVolunteer,
     Color primary,
   ) {
     return Container(
       margin: const EdgeInsets.only(left: 14, right: 14, bottom: 14),
       padding: const EdgeInsets.only(left: 14, right: 14, top: 14, bottom: 8),
       decoration: BoxDecoration(
-        color: Color.fromARGB(255, 245, 245, 245),
+        color: Color(0xFFF5F5F5),
         border: Border.all(color: const Color(0x68232120), width: 2),
         borderRadius: BorderRadius.circular(10),
       ),
@@ -114,7 +118,9 @@ class _EventPageState extends State<EventPage> {
           //Volunteers
           Row(
             spacing: 20,
-            children: volunteers.map((work) => textVolunteer(work)).toList(),
+            children: mapVolunteer.keys
+                .map((work) => textVolunteer(work))
+                .toList(),
           ),
           const SizedBox(height: 6),
 
@@ -150,7 +156,7 @@ class _EventPageState extends State<EventPage> {
                         builder: (_) => InformationPage(
                           titleEvent: title,
                           descEvent: description,
-                          listVolunteers: volunteers,
+                          mapVolunteers: mapVolunteer,
                         ),
                       ),
                     );

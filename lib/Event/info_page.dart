@@ -4,13 +4,13 @@ import 'package:google_fonts/google_fonts.dart';
 class InformationPage extends StatefulWidget {
   final String titleEvent;
   final String descEvent;
-  final List<String> listVolunteers;
+  final Map<String, Map<String, int>> mapVolunteers;
 
   const InformationPage({
     super.key,
     required this.titleEvent,
     required this.descEvent,
-    required this.listVolunteers,
+    required this.mapVolunteers,
   });
 
   @override
@@ -18,14 +18,16 @@ class InformationPage extends StatefulWidget {
 }
 
 class _InformationPageState extends State<InformationPage> {
-  Map<String, bool> mapIsSelected = {};
+  late Map<String, bool> mapIsSelected = {};
+
+  @override
+  void initState() {
+    super.initState();
+    mapIsSelected = {for (final key in widget.mapVolunteers.keys) key: false};
+  }
 
   @override
   Widget build(BuildContext context) {
-    for (int i = 0; i < widget.listVolunteers.length; i++) {
-      mapIsSelected.addAll({widget.listVolunteers[i]: false});
-    }
-
     return Scaffold(appBar: _appBar(), body: _body());
   }
 
@@ -48,8 +50,6 @@ class _InformationPageState extends State<InformationPage> {
   }
 
   Widget _body() {
-    List<String> volunteer = widget.listVolunteers;
-
     return Container(
       padding: EdgeInsets.all(32),
       child: Column(
@@ -59,7 +59,15 @@ class _InformationPageState extends State<InformationPage> {
           const SizedBox(height: 15),
           _volunteer("Volontariato"),
           const SizedBox(height: 20),
-          ...volunteer.map((work) => _buttonVolunteer(work)),
+          ...widget.mapVolunteers.entries.map(
+            (work) => _buttonVolunteer(
+              work.key,
+              work.value['Current'] ?? 0,
+              work.value['Max'] ?? 0,
+            ),
+          ),
+          const Expanded(child: SizedBox()),
+          _confirmButton(),
         ],
       ),
     );
@@ -82,8 +90,8 @@ class _InformationPageState extends State<InformationPage> {
 
   // Button Volunteer
 
-  Widget _buttonVolunteer(String volunteer) {
-    bool isSelected = mapIsSelected[volunteer]!;
+  Widget _buttonVolunteer(String volunteer, int nVolunteer, int maxVolunteer) {
+    String textVolunteer = "$nVolunteer/$maxVolunteer";
 
     return Container(
       height: 60,
@@ -96,9 +104,14 @@ class _InformationPageState extends State<InformationPage> {
           elevation: 7.5,
           shadowColor: Color.fromARGB(255, 0, 0, 0),
         ),
+        onPressed: () {
+          setState(() {
+            mapIsSelected.updateAll((work, _) => work == volunteer);
+          });
+        },
         child: Row(
           children: [
-            isSelected
+            mapIsSelected[volunteer] == true
                 ? Icon(Icons.circle, size: 32)
                 : Icon(Icons.circle_outlined, size: 32),
             SizedBox(width: 10),
@@ -109,16 +122,63 @@ class _InformationPageState extends State<InformationPage> {
                 fontWeight: FontWeight.w600,
               ),
             ),
+            Expanded(child: SizedBox()),
+            Text(
+              textVolunteer,
+              style: GoogleFonts.poppins(
+                fontSize: 20,
+                fontWeight: FontWeight.w500,
+                color: Color(0xFF181818),
+              ),
+            ),
+            SizedBox(width: 10),
           ],
         ),
-        onPressed: () {
-          setState(() {
-            mapIsSelected.updateAll((work, _) => work == volunteer);
-            isSelected = mapIsSelected[volunteer]!;
-            print(isSelected);
-          });
-        },
       ),
     );
+  }
+
+  // Button Confirm
+  Widget _confirmButton() {
+    Color buttonColor = Theme.of(context).colorScheme.primary;
+    Color textColors = Color(0xFF101010);
+
+    return SizedBox(
+      height: 75,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          elevation: 8,
+          shadowColor: Color.fromARGB(255, 0, 0, 0),
+          backgroundColor: buttonColor,
+        ),
+        onPressed: !_buttonDisabled()
+            ? null
+            : () {
+                print("coglione");
+              },
+        child: Center(
+          child: Text(
+            "CONFERMA",
+            style: GoogleFonts.poppins(
+              color: textColors,
+              fontSize: 32,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 1.25,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  bool _buttonDisabled() {
+    for (var enable in mapIsSelected.values) {
+      if (enable) return true;
+    }
+
+    return false;
   }
 }
