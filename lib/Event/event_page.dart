@@ -1,9 +1,13 @@
 import 'package:arci_ombriano/Event/info_page.dart';
-import 'package:flutter/material.dart';
+import 'package:arci_ombriano/Utils/event.dart';
+import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/material.dart';
 
 class EventPage extends StatefulWidget {
-  const EventPage({super.key});
+  const EventPage({super.key, required this.cEvent});
+
+  final Event cEvent;
 
   @override
   State<EventPage> createState() => _EventPageState();
@@ -14,25 +18,19 @@ class _EventPageState extends State<EventPage> {
   Widget build(BuildContext context) {
     Color mainColor = Theme.of(context).colorScheme.primary;
     Color dateColor = Color(0xFF1A0704);
-
-    String titleEvent = "Grassi's Night";
-
-    String text =
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
-
-    Map<String, Map<String, int>> mapVolunteers = {
-      'Cuoco': {'Current': 1, 'Max': 2},
-      'Audio': {'Current': 1, 'Max': 3},
-      'Aiuto': {'Current': 1, 'Max': 4},
-    };
-
     return Column(
       children: [
         _titleEvent(mainColor),
         const SizedBox(height: 25),
-        _dateTitle("-Venerdì 14/04 ", dateColor),
+        _dateTitle(widget.cEvent.dateEvent, dateColor),
         const SizedBox(height: 15),
-        _eventButton(titleEvent, text, "19:00", mapVolunteers, mainColor),
+        _eventButton(
+          widget.cEvent.nameEvent,
+          widget.cEvent.description,
+          widget.cEvent.dateEvent,
+          widget.cEvent.mapVolunteers,
+          mainColor,
+        ),
       ],
     );
   }
@@ -56,13 +54,15 @@ class _EventPageState extends State<EventPage> {
   }
 
   // Title date
-  Widget _dateTitle(String date, Color color) {
+  Widget _dateTitle(DateTime date, Color color) {
+    String dateString = DateFormat("- EEEE dd/MM", 'it_IT').format(date);
+
     return Container(
       width: double.infinity,
       alignment: Alignment.centerLeft,
       padding: EdgeInsets.only(left: 35),
       child: Text(
-        date,
+        dateString,
         style: GoogleFonts.poppins(
           fontSize: 24,
           fontWeight: FontWeight.w600,
@@ -77,10 +77,12 @@ class _EventPageState extends State<EventPage> {
   Widget _eventButton(
     String title,
     String description,
-    String time,
+    DateTime time,
     Map<String, Map<String, int>> mapVolunteer,
     Color primary,
   ) {
+    String timeString = DateFormat("HH:mm").format(time);
+
     return Container(
       margin: const EdgeInsets.only(left: 14, right: 14, bottom: 14),
       padding: const EdgeInsets.only(left: 14, right: 14, top: 14, bottom: 8),
@@ -116,11 +118,14 @@ class _EventPageState extends State<EventPage> {
           const SizedBox(height: 6),
 
           //Volunteers
-          Row(
-            spacing: 20,
-            children: mapVolunteer.keys
-                .map((work) => textVolunteer(work))
-                .toList(),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              spacing: 20,
+              children: mapVolunteer.keys
+                  .map((work) => textVolunteer(work))
+                  .toList(),
+            ),
           ),
           const SizedBox(height: 6),
 
@@ -132,7 +137,7 @@ class _EventPageState extends State<EventPage> {
               Icon(Icons.access_time, size: 24, color: Color(0xFF000000)),
               const SizedBox(width: 8),
               Text(
-                time,
+                timeString,
                 style: GoogleFonts.poppins(
                   fontSize: 22,
                   fontWeight: FontWeight.w500,
@@ -188,7 +193,7 @@ class _EventPageState extends State<EventPage> {
     );
   }
 
-  Row textVolunteer(String data) {
+  Widget textVolunteer(String data) {
     return Row(
       children: [
         Icon(Icons.radio_button_checked_outlined, color: Colors.black),

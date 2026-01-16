@@ -51,7 +51,7 @@ class _InformationPageState extends State<InformationPage> {
 
   Widget _body() {
     return Container(
-      padding: EdgeInsets.all(32),
+      padding: EdgeInsets.all(25),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -59,14 +59,24 @@ class _InformationPageState extends State<InformationPage> {
           const SizedBox(height: 15),
           _volunteer("Volontariato"),
           const SizedBox(height: 20),
-          ...widget.mapVolunteers.entries.map(
-            (work) => _buttonVolunteer(
-              work.key,
-              work.value['Current'] ?? 0,
-              work.value['Max'] ?? 0,
+          Expanded(
+            child: SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
+              scrollDirection: Axis.vertical,
+              child: Column(
+                children: [
+                  ...widget.mapVolunteers.entries.map(
+                    (work) => _buttonVolunteer(
+                      work.key,
+                      work.value['Current'] ?? 0,
+                      work.value['Max'] ?? 0,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          const Expanded(child: SizedBox()),
+          SizedBox(height: 15),
           _confirmButton(),
         ],
       ),
@@ -101,7 +111,7 @@ class _InformationPageState extends State<InformationPage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          elevation: 7.5,
+          elevation: 3.5,
           shadowColor: Color.fromARGB(255, 0, 0, 0),
         ),
         onPressed: () {
@@ -163,7 +173,7 @@ class _InformationPageState extends State<InformationPage> {
           child: Text(
             "CONFERMA",
             style: GoogleFonts.poppins(
-              color: textColors,
+              color: !_buttonDisabled() ? Colors.black38 : textColors,
               fontSize: 32,
               fontWeight: FontWeight.w600,
               letterSpacing: 1.25,

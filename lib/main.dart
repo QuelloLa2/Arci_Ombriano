@@ -3,10 +3,15 @@ import 'package:arci_ombriano/Calendar/calendar_page.dart';
 import 'package:arci_ombriano/Event/event_page.dart';
 import 'package:arci_ombriano/Appbar/menu.dart';
 import 'package:arci_ombriano/Appbar/appbar.dart';
+import 'package:arci_ombriano/Utils/event.dart';
 import 'package:arci_ombriano/app_theme.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('it_IT', null);
+
   runApp(const MyApp());
 }
 
@@ -40,6 +45,26 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    //Example
+    String text =
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+
+    Map<String, Map<String, int>> mapVolunteers = {
+      'Cuoco': {'Current': 1, 'Max': 2},
+      'Audio': {'Current': 1, 'Max': 3},
+      'Aiuto': {'Current': 1, 'Max': 4},
+      'Cuoco1': {'Current': 1, 'Max': 2},
+      'Audio2': {'Current': 1, 'Max': 3},
+      'Aiuto3': {'Current': 1, 'Max': 4},
+    };
+
+    Event event = Event(
+      "Grassi's Night",
+      DateTime(2025, 4, 14, 19, 00),
+      text,
+      mapVolunteers,
+    );
+
     return Scaffold(
       appBar: TopBar(
         onPressed: menuListState,
@@ -50,7 +75,11 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           IndexedStack(
             index: _activepage,
-            children: [EventPage(), CalendarPage(), AccountPage()],
+            children: [
+              EventPage(cEvent: event),
+              CalendarPage(),
+              AccountPage(),
+            ],
           ),
           if (_menulist) MenuAppBar(changePage: changePage),
         ],
