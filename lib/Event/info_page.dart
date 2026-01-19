@@ -53,30 +53,32 @@ class _InformationPageState extends State<InformationPage> {
     return Container(
       padding: EdgeInsets.all(25),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _description(widget.descEvent),
-          const SizedBox(height: 15),
-          _volunteer("Volontariato"),
-          const SizedBox(height: 20),
           Expanded(
             child: SingleChildScrollView(
-              physics: BouncingScrollPhysics(),
-              scrollDirection: Axis.vertical,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ...widget.mapVolunteers.entries.map(
-                    (work) => _buttonVolunteer(
-                      work.key,
-                      work.value['Current'] ?? 0,
-                      work.value['Max'] ?? 0,
-                    ),
+                  _description(widget.descEvent),
+                  const SizedBox(height: 15),
+                  _volunteer("Volontariato"),
+                  const SizedBox(height: 20),
+                  Column(
+                    children: [
+                      ...widget.mapVolunteers.entries.map(
+                        (work) => _buttonVolunteer(
+                          work.key,
+                          work.value['Current'] ?? 0,
+                          work.value['Max'] ?? 0,
+                        ),
+                      ),
+                    ],
                   ),
+                  SizedBox(height: 15),
                 ],
               ),
             ),
           ),
-          SizedBox(height: 15),
           _confirmButton(),
         ],
       ),
@@ -166,8 +168,11 @@ class _InformationPageState extends State<InformationPage> {
         ),
         onPressed: !_buttonDisabled()
             ? null
-            : () {
-                print("coglione");
+            : () => {
+                showDialog<String>(
+                  context: context,
+                  builder: (context) => _goodEnding(),
+                ),
               },
         child: Center(
           child: Text(
@@ -185,10 +190,27 @@ class _InformationPageState extends State<InformationPage> {
   }
 
   bool _buttonDisabled() {
-    for (var enable in mapIsSelected.values) {
+    for (bool enable in mapIsSelected.values) {
       if (enable) return true;
     }
 
     return false;
+  }
+
+  AlertDialog _goodEnding() {
+    return AlertDialog(
+      title: Text("Conferma"),
+      content: Text("Vuoi confermare la disponibilità all'evento?"),
+      actions: [
+        TextButton(
+          onPressed: () => {Navigator.pop(context), Navigator.pop(context)},
+          child: Text("No"),
+        ),
+        TextButton(
+          onPressed: () => {Navigator.pop(context), Navigator.pop(context)},
+          child: Text("Si"),
+        ),
+      ],
+    );
   }
 }

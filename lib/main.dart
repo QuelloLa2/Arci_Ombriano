@@ -53,9 +53,6 @@ class _MyHomePageState extends State<MyHomePage> {
       'Cuoco': {'Current': 1, 'Max': 2},
       'Audio': {'Current': 1, 'Max': 3},
       'Aiuto': {'Current': 1, 'Max': 4},
-      'Cuoco1': {'Current': 1, 'Max': 2},
-      'Audio2': {'Current': 1, 'Max': 3},
-      'Aiuto3': {'Current': 1, 'Max': 4},
     };
 
     Event event = Event(
