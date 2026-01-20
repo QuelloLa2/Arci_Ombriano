@@ -22,12 +22,12 @@ class _EventPageState extends State<EventPage> {
       children: [
         _titleEvent(mainColor),
         const SizedBox(height: 25),
-        _dateTitle(widget.cEvent.dateEvent, dateColor),
+        _dateTitle(widget.cEvent.timeEvent, dateColor),
         const SizedBox(height: 15),
         _eventButton(
           widget.cEvent.nameEvent,
           widget.cEvent.description,
-          widget.cEvent.dateEvent,
+          widget.cEvent.timeEvent,
           widget.cEvent.mapVolunteers,
           mainColor,
         ),
