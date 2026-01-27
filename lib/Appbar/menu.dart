@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MenuAppBar extends StatelessWidget {
   final Function(int) changePage;
@@ -13,9 +14,9 @@ class MenuAppBar extends StatelessWidget {
     return Column(
       children: [
         _box(space),
-        _selectpage("Event", context, 0),
+        _selectpage("Eventi", context, 0),
         _box(space),
-        _selectpage("Calendar", context, 1),
+        _selectpage("Calendario", context, 1),
         _box(space),
         _selectpage("Account", context, 2),
         Expanded(child: _box(double.infinity)),
@@ -41,7 +42,13 @@ class MenuAppBar extends StatelessWidget {
             foregroundColor: theme.foregroundColor,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
           ),
-          child: Text(pageName),
+          child: Text(
+            pageName,
+            style: GoogleFonts.poppins(
+              fontSize: 24,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
         ),
       ),
     );

@@ -57,13 +57,49 @@ class _MyHomePageState extends State<MyHomePage> {
       'Aiuto': {'Current': 1, 'Max': 4},
     };
 
-    Event event = Event(
+    Event event_1 = Event(
       id: 0,
       nameEvent: title,
-      timeEvent: DateTime(2025, 4, 14, 19, 0),
+      timeEvent: DateTime(2026, 1, 14, 21, 0),
       description: text,
       mapVolunteers: mapVolunteers,
     );
+
+    Event event_2 = Event(
+      id: 1,
+      nameEvent: title,
+      timeEvent: DateTime(2026, 1, 14, 21, 0),
+      description: text,
+      mapVolunteers: mapVolunteers,
+    );
+
+    Event event_3 = Event(
+      id: 2,
+      nameEvent: title,
+      timeEvent: DateTime(2026, 1, 8, 19, 0),
+      description: text,
+      mapVolunteers: mapVolunteers,
+    );
+
+    Event event_4 = Event(
+      id: 3,
+      nameEvent: title,
+      timeEvent: DateTime(2026, 1, 18, 19, 0),
+      description: text,
+      mapVolunteers: mapVolunteers,
+    );
+
+    Event event_5 = Event(
+      id: 4,
+      nameEvent: title,
+      timeEvent: DateTime(2026, 1, 28, 19, 0),
+      description: text,
+      mapVolunteers: mapVolunteers,
+    );
+
+    List<Event> exampleEvents = [event_1, event_2, event_3, event_4, event_5];
+
+    exampleEvents.sort((a, b) => a.timeEvent.compareTo(b.timeEvent));
 
     return Scaffold(
       appBar: TopBar(
@@ -76,8 +112,8 @@ class _MyHomePageState extends State<MyHomePage> {
           IndexedStack(
             index: _activepage,
             children: [
-              EventPage(cEvent: event),
-              CalendarPage(),
+              EventPage(listEvents: exampleEvents),
+              CalendarPage(listEvents: exampleEvents),
               AccountPage(),
             ],
           ),

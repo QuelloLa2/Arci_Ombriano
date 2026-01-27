@@ -5,9 +5,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
 
 class EventPage extends StatefulWidget {
-  const EventPage({super.key, required this.cEvent});
+  const EventPage({super.key, required this.listEvents});
 
-  final Event cEvent;
+  final List<Event> listEvents;
 
   @override
   State<EventPage> createState() => _EventPageState();
@@ -17,19 +17,30 @@ class _EventPageState extends State<EventPage> {
   @override
   Widget build(BuildContext context) {
     Color mainColor = Theme.of(context).colorScheme.primary;
-    Color dateColor = Color(0xFF1A0704);
     return Column(
       children: [
         _titleEvent(mainColor),
         const SizedBox(height: 25),
-        _dateTitle(widget.cEvent.timeEvent, dateColor),
-        const SizedBox(height: 15),
-        _eventButton(
-          widget.cEvent.nameEvent,
-          widget.cEvent.description,
-          widget.cEvent.timeEvent,
-          widget.cEvent.mapVolunteers,
-          mainColor,
+        Expanded(
+          child: ListView.builder(
+            itemCount: widget.listEvents.length,
+            itemBuilder: (context, index) {
+              final event = widget.listEvents[index];
+              return Column(
+                children: [
+                  _isSameDate(index),
+                  _eventButton(
+                    event.nameEvent,
+                    event.description,
+                    event.timeEvent,
+                    event.mapVolunteers,
+                    mainColor,
+                    event.id.toString(),
+                  ),
+                ],
+              );
+            },
+          ),
         ),
       ],
     );
@@ -55,7 +66,7 @@ class _EventPageState extends State<EventPage> {
 
   // Title date
   Widget _dateTitle(DateTime date, Color color) {
-    String dateString = DateFormat("- EEEE dd/MM", 'it_IT').format(date);
+    String dateString = DateFormat("- EEEE dd/MM/yy", 'it_IT').format(date);
 
     return Container(
       width: double.infinity,
@@ -75,16 +86,17 @@ class _EventPageState extends State<EventPage> {
 
   //Event main details
   Widget _eventButton(
-    String title,
+    String nameEvent,
     String description,
     DateTime time,
     Map<String, Map<String, int>> mapVolunteer,
     Color primary,
+    String id,
   ) {
     String timeString = DateFormat("HH:mm").format(time);
 
     return Container(
-      margin: const EdgeInsets.only(left: 14, right: 14, bottom: 14),
+      margin: const EdgeInsets.only(left: 14, right: 14, bottom: 14, top: 5),
       padding: const EdgeInsets.only(left: 14, right: 14, top: 14, bottom: 8),
       decoration: BoxDecoration(
         color: Color(0xFFF5F5F5),
@@ -97,7 +109,7 @@ class _EventPageState extends State<EventPage> {
         children: [
           //Title Event
           Text(
-            title,
+            nameEvent,
             style: GoogleFonts.poppins(
               fontSize: 28,
               fontWeight: FontWeight.w600,
@@ -159,7 +171,7 @@ class _EventPageState extends State<EventPage> {
                     Navigator.of(context, rootNavigator: true).push(
                       MaterialPageRoute(
                         builder: (_) => InformationPage(
-                          titleEvent: title,
+                          titleEvent: nameEvent,
                           descEvent: description,
                           mapVolunteers: mapVolunteer,
                         ),
@@ -193,6 +205,8 @@ class _EventPageState extends State<EventPage> {
     );
   }
 
+  //Create Volunteer Row
+
   Widget textVolunteer(String data) {
     return Row(
       children: [
@@ -204,5 +218,20 @@ class _EventPageState extends State<EventPage> {
         ),
       ],
     );
+  }
+
+  // Controll Same Day/Month
+
+  Widget _isSameDate(int index) {
+    Color dateColor = Color(0xFF1A0704);
+
+    if (index == 0 ||
+        !DateUtils.isSameDay(
+          widget.listEvents[index].dateEvent,
+          widget.listEvents[index - 1].dateEvent,
+        )) {
+      return _dateTitle(widget.listEvents[index].dateEvent, dateColor);
+    }
+    return const SizedBox(height: 15);
   }
 }

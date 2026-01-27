@@ -1,5 +1,3 @@
-//TODO: connect Event with the Calendar
-
 import 'package:arci_ombriano/Utils/event.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -7,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class CalendarPage extends StatefulWidget {
-  const CalendarPage({super.key});
+  const CalendarPage({super.key, required this.listEvents});
+
+  final List<Event> listEvents;
 
   @override
   State<CalendarPage> createState() => _CalendarPageState();
@@ -15,15 +15,18 @@ class CalendarPage extends StatefulWidget {
 
 class _CalendarPageState extends State<CalendarPage> {
   DateTime today = DateTime.now();
+  List<Event> selectedEvent = [];
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [_calendarTable(), SizedBox(height: 15)]);
+    return Column(
+      children: [_calendarTable(), SizedBox(height: 15), _listEventView()],
+    );
   }
 
   // Calendar Table
   Widget _calendarTable() {
-    return TableCalendar<Event>(
+    return TableCalendar(
       rowHeight: 80,
       locale: 'it_IT',
       availableCalendarFormats: {
@@ -40,12 +43,13 @@ class _CalendarPageState extends State<CalendarPage> {
       onDaySelected: _onDaySelected,
       headerStyle: _headerStyle(),
       calendarStyle: _calendarStyle(),
+      eventLoader: _createListEvents,
     );
   }
 
   // Builder
-  CalendarBuilders<Event> _builderCalendar() {
-    return CalendarBuilders<Event>(
+  CalendarBuilders _builderCalendar() {
+    return CalendarBuilders(
       dowBuilder: (context, day) {
         final text = DateFormat.E('it_IT').format(day);
 
@@ -63,9 +67,10 @@ class _CalendarPageState extends State<CalendarPage> {
     );
   }
 
-  void _onDaySelected(DateTime day, DateTime focusedDay) {
+  void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     setState(() {
-      today = day;
+      today = selectedDay;
+      selectedEvent = _createListEvents(selectedDay);
     });
   }
 
@@ -104,6 +109,46 @@ class _CalendarPageState extends State<CalendarPage> {
       ),
       weekendTextStyle: GoogleFonts.poppins(color: mainColor, fontSize: 18),
       defaultTextStyle: GoogleFonts.poppins(fontSize: 18),
+    );
+  }
+
+  //Setup map for the events in calendar
+  List<Event> _createListEvents(DateTime day) {
+    return widget.listEvents.where((event) {
+      return isSameDay(event.dateEvent, day);
+    }).toList();
+  }
+
+  // Expanded list for events day
+  Expanded _listEventView() {
+    return Expanded(
+      child: ListView.builder(
+        itemCount: selectedEvent.length,
+        itemBuilder: (context, index) {
+          final event = selectedEvent[index];
+          return Column(children: [_eventTile(event.nameEvent)]);
+        },
+      ),
+    );
+  }
+
+  Widget _eventTile(String eventName) {
+    return Card(
+      margin: EdgeInsets.all(8),
+      shape: RoundedRectangleBorder(
+        side: BorderSide(
+          width: 2.5,
+          color: Theme.of(context).colorScheme.primary,
+        ),
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: ListTile(
+        leading: Text(
+          eventName,
+          style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.w500),
+        ),
+        trailing: Icon(Icons.ac_unit),
+      ),
     );
   }
 }
