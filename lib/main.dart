@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: appTheme,
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
@@ -46,7 +47,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     //Example
-    String title = "Grassi's Night";
 
     String text =
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
@@ -59,7 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     Event event_1 = Event(
       id: 0,
-      nameEvent: title,
+      nameEvent: "Riunione",
       timeEvent: DateTime(2026, 1, 14, 21, 0),
       description: text,
       mapVolunteers: mapVolunteers,
@@ -67,15 +67,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
     Event event_2 = Event(
       id: 1,
-      nameEvent: title,
-      timeEvent: DateTime(2026, 1, 14, 21, 0),
+      nameEvent: "Grassi's Night",
+      timeEvent: DateTime(2026, 1, 14, 19, 0),
       description: text,
       mapVolunteers: mapVolunteers,
     );
 
     Event event_3 = Event(
       id: 2,
-      nameEvent: title,
+      nameEvent: "Cinema",
       timeEvent: DateTime(2026, 1, 8, 19, 0),
       description: text,
       mapVolunteers: mapVolunteers,
@@ -83,7 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     Event event_4 = Event(
       id: 3,
-      nameEvent: title,
+      nameEvent: "Convocazione",
       timeEvent: DateTime(2026, 1, 18, 19, 0),
       description: text,
       mapVolunteers: mapVolunteers,
@@ -91,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     Event event_5 = Event(
       id: 4,
-      nameEvent: title,
+      nameEvent: "Lezione",
       timeEvent: DateTime(2026, 1, 28, 19, 0),
       description: text,
       mapVolunteers: mapVolunteers,

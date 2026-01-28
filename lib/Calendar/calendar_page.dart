@@ -1,4 +1,5 @@
 import 'package:arci_ombriano/Utils/event.dart';
+import 'package:arci_ombriano/Event/info_page.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
@@ -126,13 +127,13 @@ class _CalendarPageState extends State<CalendarPage> {
         itemCount: selectedEvent.length,
         itemBuilder: (context, index) {
           final event = selectedEvent[index];
-          return Column(children: [_eventTile(event.nameEvent)]);
+          return Column(children: [_eventTile(event)]);
         },
       ),
     );
   }
 
-  Widget _eventTile(String eventName) {
+  Widget _eventTile(Event event) {
     return Card(
       margin: EdgeInsets.all(8),
       shape: RoundedRectangleBorder(
@@ -144,10 +145,29 @@ class _CalendarPageState extends State<CalendarPage> {
       ),
       child: ListTile(
         leading: Text(
-          eventName,
+          event.nameEvent,
           style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.w500),
         ),
-        trailing: Icon(Icons.ac_unit),
+        title: Text(
+          "- ${DateFormat("HH:mm").format(event.timeEvent)}",
+          style: GoogleFonts.poppins(
+            fontSize: 18,
+            letterSpacing: -0.5,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        trailing: Icon(Icons.keyboard_arrow_right_rounded, size: 32),
+        onTap: () {
+          Navigator.of(context, rootNavigator: true).push(
+            MaterialPageRoute(
+              builder: (_) => InformationPage(
+                titleEvent: event.nameEvent,
+                descEvent: event.description,
+                mapVolunteers: event.mapVolunteers,
+              ),
+            ),
+          );
+        },
       ),
     );
   }

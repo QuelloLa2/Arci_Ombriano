@@ -1,8 +1,8 @@
 class Event {
   final int id;
   String nameEvent;
-  DateTime dateEvent;
-  DateTime timeEvent;
+  DateTime dateEvent; // dd/mm/yy
+  DateTime timeEvent; // dd/mm/yy hh:mm
   String description;
   Map<String, Map<String, int>> mapVolunteers;
 
