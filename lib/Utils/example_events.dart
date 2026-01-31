@@ -1,7 +1,7 @@
 import 'package:arci_ombriano/Utils/event.dart';
 
 final String exampleText =
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eleifend, leo sed commodo dignissim, arcu elit egestas magna, vel vestibulum ligula velit et dolor. Mauris placerat eget enim eu pulvinar. Fusce condimentum maximus neque vel ullamcorper. Proin tellus augue, aliquam scelerisque tellus eu, facilisis pulvinar leo. Nunc consectetur velit eu ultrices pretium. Nunc tempus eu velit pretium pellentesque. Vestibulum condimentum ultricies enim, vel aliquam lacus malesuada at. Nam posuere, tortor non sed";
 
 final Map<String, Map<String, int>> exampleMapVolunteers = {
   'Cuoco': {'Current': 2, 'Max': 2},

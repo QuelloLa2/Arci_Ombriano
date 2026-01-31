@@ -79,7 +79,6 @@ class _InformationPageState extends State<InformationPage> {
               ),
             ),
           ),
-          _confirmButton(),
         ],
       ),
     );
@@ -87,8 +86,8 @@ class _InformationPageState extends State<InformationPage> {
 
   //Description
 
-  Text _description(String data) {
-    return Text(widget.descEvent, style: GoogleFonts.poppins(fontSize: 22));
+  Widget _description(String data) {
+    return Text(data, style: GoogleFonts.poppins(fontSize: 22, height: 1.45));
   }
 
   //Title Volunteer
@@ -97,6 +96,8 @@ class _InformationPageState extends State<InformationPage> {
     return Text(
       data,
       style: GoogleFonts.poppins(fontSize: 28, fontWeight: FontWeight.w600),
+      maxLines: 8,
+      overflow: TextOverflow.ellipsis,
     );
   }
 
@@ -116,11 +117,17 @@ class _InformationPageState extends State<InformationPage> {
           elevation: 3.5,
           shadowColor: Color.fromARGB(255, 0, 0, 0),
         ),
-        onPressed: () {
-          setState(() {
-            mapIsSelected.updateAll((work, _) => work == volunteer);
-          });
-        },
+        onPressed: nVolunteer == maxVolunteer
+            ? null
+            : () {
+                setState(() {
+                  if (mapIsSelected[volunteer] == true) {
+                    mapIsSelected.updateAll((work, _) => false);
+                  } else {
+                    mapIsSelected.updateAll((work, _) => work == volunteer);
+                  }
+                });
+              },
         child: Row(
           children: [
             mapIsSelected[volunteer] == true
@@ -147,70 +154,6 @@ class _InformationPageState extends State<InformationPage> {
           ],
         ),
       ),
-    );
-  }
-
-  // Button Confirm
-  Widget _confirmButton() {
-    Color buttonColor = Theme.of(context).colorScheme.primary;
-    Color textColors = Color(0xFF101010);
-
-    return SizedBox(
-      height: 75,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-          ),
-          elevation: 8,
-          shadowColor: Color.fromARGB(255, 0, 0, 0),
-          backgroundColor: buttonColor,
-        ),
-        onPressed: !_buttonDisabled()
-            ? null
-            : () => {
-                showDialog<String>(
-                  context: context,
-                  builder: (context) => _goodEnding(),
-                ),
-              },
-        child: Center(
-          child: Text(
-            "CONFERMA",
-            style: GoogleFonts.poppins(
-              color: !_buttonDisabled() ? Colors.black38 : textColors,
-              fontSize: 32,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 1.25,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  bool _buttonDisabled() {
-    for (bool enable in mapIsSelected.values) {
-      if (enable) return true;
-    }
-
-    return false;
-  }
-
-  AlertDialog _goodEnding() {
-    return AlertDialog(
-      title: Text("Conferma"),
-      content: Text("Vuoi confermare la disponibilità all'evento?"),
-      actions: [
-        TextButton(
-          onPressed: () => {Navigator.pop(context), Navigator.pop(context)},
-          child: Text("No"),
-        ),
-        TextButton(
-          onPressed: () => {Navigator.pop(context), Navigator.pop(context)},
-          child: Text("Si"),
-        ),
-      ],
     );
   }
 }

@@ -69,8 +69,8 @@ class _TopBarState extends State<TopBar> with SingleTickerProviderStateMixin {
         style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 26),
       ),
       actions: [
-        Padding(
-          padding: const EdgeInsets.only(top: 9, bottom: 9, right: 16),
+        Container(
+          margin: EdgeInsets.only(right: 20),
           child: Image.asset('lib/Images/logo.png'),
         ),
       ],
