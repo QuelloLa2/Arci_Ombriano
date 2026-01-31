@@ -11,10 +11,11 @@ class _AccountPageState extends State<AccountPage> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Container(
-        width: 100,
-        height: 1000,
-        color: Colors.green,
+      child: TextFormField(
+        decoration: InputDecoration(
+          border: UnderlineInputBorder(),
+          labelText: "Input",
+        ),
       ),
     );
   }

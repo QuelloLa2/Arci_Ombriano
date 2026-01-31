@@ -3,10 +3,12 @@ import 'package:arci_ombriano/Calendar/calendar_page.dart';
 import 'package:arci_ombriano/Event/event_page.dart';
 import 'package:arci_ombriano/Appbar/menu.dart';
 import 'package:arci_ombriano/Appbar/appbar.dart';
-import 'package:arci_ombriano/Utils/event.dart';
+//import 'package:arci_ombriano/Utils/event.dart';
 import 'package:arci_ombriano/app_theme.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter/material.dart';
+
+import 'package:arci_ombriano/Utils/example_events.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,58 +48,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    //Example
-
-    String text =
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
-
-    Map<String, Map<String, int>> mapVolunteers = {
-      'Cuoco': {'Current': 1, 'Max': 2},
-      'Audio': {'Current': 1, 'Max': 3},
-      'Aiuto': {'Current': 1, 'Max': 4},
-    };
-
-    Event event_1 = Event(
-      id: 0,
-      nameEvent: "Riunione",
-      timeEvent: DateTime(2026, 1, 14, 21, 0),
-      description: text,
-      mapVolunteers: mapVolunteers,
-    );
-
-    Event event_2 = Event(
-      id: 1,
-      nameEvent: "Grassi's Night",
-      timeEvent: DateTime(2026, 1, 14, 19, 0),
-      description: text,
-      mapVolunteers: mapVolunteers,
-    );
-
-    Event event_3 = Event(
-      id: 2,
-      nameEvent: "Cinema",
-      timeEvent: DateTime(2026, 1, 8, 19, 0),
-      description: text,
-      mapVolunteers: mapVolunteers,
-    );
-
-    Event event_4 = Event(
-      id: 3,
-      nameEvent: "Convocazione",
-      timeEvent: DateTime(2026, 1, 18, 19, 0),
-      description: text,
-      mapVolunteers: mapVolunteers,
-    );
-
-    Event event_5 = Event(
-      id: 4,
-      nameEvent: "Lezione",
-      timeEvent: DateTime(2026, 1, 28, 19, 0),
-      description: text,
-      mapVolunteers: mapVolunteers,
-    );
-
-    List<Event> exampleEvents = [event_1, event_2, event_3, event_4, event_5];
 
     exampleEvents.sort((a, b) => a.timeEvent.compareTo(b.timeEvent));
 
