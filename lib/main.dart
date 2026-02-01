@@ -3,7 +3,6 @@ import 'package:arci_ombriano/Calendar/calendar_page.dart';
 import 'package:arci_ombriano/Event/event_page.dart';
 import 'package:arci_ombriano/Appbar/menu.dart';
 import 'package:arci_ombriano/Appbar/appbar.dart';
-//import 'package:arci_ombriano/Utils/event.dart';
 import 'package:arci_ombriano/app_theme.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +47,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-
     exampleEvents.sort((a, b) => a.timeEvent.compareTo(b.timeEvent));
 
     return Scaffold(
@@ -81,7 +79,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void changePage(int index) {
     setState(() {
-      _activepage = index;
+      if (index != -1) {
+        _activepage = index;
+      }
       menuListState();
     });
   }

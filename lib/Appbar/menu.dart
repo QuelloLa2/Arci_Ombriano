@@ -9,7 +9,7 @@ class MenuAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double space = 12.5;
+    double space = 15;
 
     return Column(
       children: [
@@ -31,23 +31,36 @@ class MenuAppBar extends StatelessWidget {
 
     return Container(
       color: _transparency,
-      padding: EdgeInsets.symmetric(horizontal: 15),
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: SizedBox(
         width: double.infinity,
         height: 75,
-        child: TextButton(
+        child: ElevatedButton(
           onPressed: () => changePage(index),
-          style: TextButton.styleFrom(
+          style: ElevatedButton.styleFrom(
             backgroundColor: theme.backgroundColor,
             foregroundColor: theme.foregroundColor,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-          ),
-          child: Text(
-            pageName,
-            style: GoogleFonts.poppins(
-              fontSize: 24,
-              fontWeight: FontWeight.w500,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
             ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              switch (pageName) {
+                "Eventi" => Icon(Icons.event),
+                "Calendario" => Icon(Icons.calendar_month_outlined),
+                "Account" => Icon(Icons.account_box_rounded),
+                _ => const SizedBox(),
+              },
+              Text(
+                pageName,
+                style: GoogleFonts.poppins(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -57,10 +70,13 @@ class MenuAppBar extends StatelessWidget {
   // Container for spacing
 
   Widget _box(double height) {
-    return Container(
-      width: double.infinity,
-      height: height,
-      color: _transparency,
+    return InkWell(
+      onTap: () => changePage(-1),
+      child: Container(
+        width: double.infinity,
+        height: height,
+        color: _transparency,
+      ),
     );
   }
 }
