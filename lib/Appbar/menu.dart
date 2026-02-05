@@ -48,15 +48,27 @@ class MenuAppBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               switch (pageName) {
-                "Eventi" => Icon(Icons.event),
-                "Calendario" => Icon(Icons.calendar_month_outlined),
-                "Account" => Icon(Icons.account_box_rounded),
+                "Eventi" => Icon(
+                  Icons.event,
+                  size: 28,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                "Calendario" => Icon(
+                  Icons.calendar_month_outlined,
+                  size: 28,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                "Account" => Icon(
+                  Icons.account_box_rounded,
+                  size: 28,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
                 _ => const SizedBox(),
               },
               Text(
                 pageName,
                 style: GoogleFonts.poppins(
-                  fontSize: 24,
+                  fontSize: 30,
                   fontWeight: FontWeight.w500,
                 ),
               ),

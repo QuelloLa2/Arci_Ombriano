@@ -20,7 +20,6 @@ class _EventPageState extends State<EventPage> {
     return Column(
       children: [
         _titleEvent(mainColor),
-        const SizedBox(height: 25),
         Expanded(
           child: ListView.builder(
             itemCount: widget.listEvents.length,

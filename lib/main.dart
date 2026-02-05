@@ -65,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
               AccountPage(),
             ],
           ),
-          if (_menulist) MenuAppBar(changePage: changePage),
+          _animationWidget(),
         ],
       ),
     );
@@ -84,5 +84,23 @@ class _MyHomePageState extends State<MyHomePage> {
       }
       menuListState();
     });
+  }
+
+  AnimatedSwitcher _animationWidget() {
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 450),
+      transitionBuilder: (child, animation) {
+        return SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(1, 0),
+            end: Offset.zero,
+          ).animate(animation),
+          child: FadeTransition(opacity: animation, child: child),
+        );
+      },
+      child: _menulist
+          ? MenuAppBar(key: const ValueKey('menu'), changePage: changePage)
+          : const SizedBox(key: ValueKey('empty')),
+    );
   }
 }
