@@ -5,7 +5,7 @@ final String exampleText =
 
 final Map<String, Map<String, int>> exampleMapVolunteers = {
   'Cuoco': {'Current': 2, 'Max': 2},
-  'Audio': {'Current': 1, 'Max': 3},
+  'Audio': {'Current': 2, 'Max': 3},
   'Cameriere': {'Current': 1, 'Max': 4},
 };
 

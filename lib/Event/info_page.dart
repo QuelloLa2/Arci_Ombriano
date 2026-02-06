@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -92,12 +93,15 @@ class _InformationPageState extends State<InformationPage> {
 
   //Title Volunteer
 
-  Text _volunteer(String data) {
-    return Text(
-      data,
-      style: GoogleFonts.poppins(fontSize: 28, fontWeight: FontWeight.w600),
-      maxLines: 8,
-      overflow: TextOverflow.ellipsis,
+  ListTile _volunteer(String data) {
+    return ListTile(
+      leading: Text(
+        data,
+        style: GoogleFonts.poppins(fontSize: 28, fontWeight: FontWeight.w600),
+        maxLines: 8,
+        overflow: TextOverflow.ellipsis,
+      ),
+      trailing: IconButton(onPressed: () {}, icon: Icon(Icons.group, size: 30)),
     );
   }
 
@@ -117,17 +121,15 @@ class _InformationPageState extends State<InformationPage> {
           elevation: 3.5,
           shadowColor: Color.fromARGB(255, 0, 0, 0),
         ),
-        onPressed: nVolunteer == maxVolunteer
-            ? null
-            : () {
-                setState(() {
-                  if (mapIsSelected[volunteer] == true) {
-                    mapIsSelected.updateAll((work, _) => false);
-                  } else {
-                    mapIsSelected.updateAll((work, _) => work == volunteer);
-                  }
-                });
-              },
+        onPressed: () {
+          setState(() {
+            if (mapIsSelected[volunteer] == true) {
+              mapIsSelected.updateAll((work, _) => false);
+            } else {
+              mapIsSelected.updateAll((work, _) => work == volunteer);
+            }
+          });
+        },
         child: Row(
           children: [
             mapIsSelected[volunteer] == true

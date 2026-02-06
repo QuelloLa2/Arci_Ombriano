@@ -88,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   AnimatedSwitcher _animationWidget() {
     return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 450),
+      duration: Duration(milliseconds: 200),
       transitionBuilder: (child, animation) {
         return SlideTransition(
           position: Tween<Offset>(
