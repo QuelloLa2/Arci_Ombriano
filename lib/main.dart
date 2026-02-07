@@ -3,6 +3,7 @@ import 'package:arci_ombriano/Calendar/calendar_page.dart';
 import 'package:arci_ombriano/Event/event_page.dart';
 import 'package:arci_ombriano/Appbar/menu.dart';
 import 'package:arci_ombriano/Appbar/appbar.dart';
+import 'package:arci_ombriano/Utils/menu_button.dart';
 import 'package:arci_ombriano/app_theme.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter/material.dart';
@@ -68,6 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
           _animationWidget(),
         ],
       ),
+      floatingActionButton: MenuButton(),
     );
   }
 
@@ -86,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  AnimatedSwitcher _animationWidget() {
+  Widget _animationWidget() {
     return AnimatedSwitcher(
       duration: Duration(milliseconds: 200),
       transitionBuilder: (child, animation) {
