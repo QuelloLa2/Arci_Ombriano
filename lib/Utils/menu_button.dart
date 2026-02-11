@@ -10,7 +10,7 @@ class MenuButton extends StatefulWidget {
 class _MenuButtonState extends State<MenuButton> {
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton(
+    return FloatingActionButton.large(
       shape: CircleBorder(),
       onPressed: () {
         print("Ciao");

@@ -56,24 +56,15 @@ class _TopBarState extends State<TopBar> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      leading: IconButton(
-        icon: AnimatedIcon(
-          icon: AnimatedIcons.menu_close,
-          progress: _animationControll,
-        ),
-        onPressed: widget.onPressed,
+      leading: Container(
+        margin: EdgeInsets.only(left: 20),
+        child: Image.asset('lib/Images/logo.png'),
       ),
       centerTitle: true,
       title: Text(
         widget.titlePage,
         style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 26),
       ),
-      actions: [
-        Container(
-          margin: EdgeInsets.only(right: 20),
-          child: Image.asset('lib/Images/logo.png'),
-        ),
-      ],
     );
   }
 }
