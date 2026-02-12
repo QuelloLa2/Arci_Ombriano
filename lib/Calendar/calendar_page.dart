@@ -1,6 +1,5 @@
 import 'package:arci_ombriano/Utils/event.dart';
 import 'package:arci_ombriano/Event/info_page.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -96,7 +95,7 @@ class _CalendarPageState extends State<CalendarPage> {
           DateFormat.yMMMM(locale).format(date),
       */
       titleTextFormatter: (date, locale) =>
-          DateFormat("MMM", 'it_IT').format(date).toUpperCase()[0] + 
+          DateFormat("MMM", 'it_IT').format(date).toUpperCase()[0] +
           DateFormat("MMMM", 'it_IT').format(date).substring(1),
     );
   }
@@ -114,8 +113,8 @@ class _CalendarPageState extends State<CalendarPage> {
         color: mainColor,
         shape: BoxShape.circle,
       ),
-      weekendTextStyle: GoogleFonts.poppins(color: mainColor, fontSize: 18),
-      defaultTextStyle: GoogleFonts.poppins(fontSize: 18),
+      weekendTextStyle: TextStyle(color: mainColor, fontSize: 18),
+      defaultTextStyle: TextStyle(fontSize: 18),
     );
   }
 
@@ -152,11 +151,11 @@ class _CalendarPageState extends State<CalendarPage> {
       child: ListTile(
         leading: Text(
           event.nameEvent,
-          style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.w500),
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
         ),
         title: Text(
           "- ${DateFormat("HH:mm").format(event.timeEvent)}",
-          style: GoogleFonts.poppins(
+          style: TextStyle(
             fontSize: 18,
             letterSpacing: -0.5,
             fontWeight: FontWeight.w500,

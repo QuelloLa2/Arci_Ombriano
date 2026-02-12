@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class MenuButton extends StatefulWidget {
-  const MenuButton({super.key});
+class AddEventButton extends StatefulWidget {
+  const AddEventButton({super.key});
 
   @override
-  State<MenuButton> createState() => _MenuButtonState();
+  State<AddEventButton> createState() => _AddEventButtonState();
 }
 
-class _MenuButtonState extends State<MenuButton> {
+class _AddEventButtonState extends State<AddEventButton> {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton.large(

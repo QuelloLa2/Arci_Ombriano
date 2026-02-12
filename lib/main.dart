@@ -1,7 +1,6 @@
 import 'package:arci_ombriano/Account/account_page.dart';
 import 'package:arci_ombriano/Calendar/calendar_page.dart';
 import 'package:arci_ombriano/Event/event_page.dart';
-import 'package:arci_ombriano/Appbar/menu.dart';
 import 'package:arci_ombriano/Appbar/appbar.dart';
 import 'package:arci_ombriano/Utils/menu_button.dart';
 import 'package:arci_ombriano/app_theme.dart';
@@ -42,67 +41,49 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<String> titleText = ["Eventi", "Calendario", "Account"];
-  int _activepage = 0;
 
-  bool _menulist = false;
+  int _activepage = 0;
 
   @override
   Widget build(BuildContext context) {
     exampleEvents.sort((a, b) => a.timeEvent.compareTo(b.timeEvent));
 
+    final List<Widget> pages = [
+      EventPage(listEvents: exampleEvents),
+      CalendarPage(listEvents: exampleEvents),
+      AccountPage(),
+    ];
+
     return Scaffold(
-      appBar: TopBar(
-        onPressed: menuListState,
-        isOpen: _menulist,
-        titlePage: titleText[_activepage],
-      ),
-      body: Stack(
-        children: [
-          IndexedStack(
-            index: _activepage,
-            children: [
-              EventPage(listEvents: exampleEvents),
-              CalendarPage(listEvents: exampleEvents),
-              AccountPage(),
-            ],
+      appBar: TopBar(titlePage: titleText[_activepage]),
+      body: Stack(children: [pages.elementAt(_activepage)]),
+      floatingActionButton: AddEventButton(),
+      bottomNavigationBar: BottomNavigationBar(
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.event_note_rounded),
+            label: "Eventi",
           ),
-          _animationWidget(),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_month),
+            label: "Calendario",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_circle_rounded),
+            label: "Account",
+          ),
         ],
+        currentIndex: _activepage,
+        onTap: _onItemTapped,
       ),
-      floatingActionButton: MenuButton(),
     );
   }
 
-  void menuListState() {
+  void _onItemTapped(int index) {
     setState(() {
-      _menulist = !_menulist;
+      _activepage = index;
     });
-  }
-
-  void changePage(int index) {
-    setState(() {
-      if (index != -1) {
-        _activepage = index;
-      }
-      menuListState();
-    });
-  }
-
-  Widget _animationWidget() {
-    return AnimatedSwitcher(
-      duration: Duration(milliseconds: 200),
-      transitionBuilder: (child, animation) {
-        return SlideTransition(
-          position: Tween<Offset>(
-            begin: const Offset(1, 0),
-            end: Offset.zero,
-          ).animate(animation),
-          child: FadeTransition(opacity: animation, child: child),
-        );
-      },
-      child: _menulist
-          ? MenuAppBar(key: const ValueKey('menu'), changePage: changePage)
-          : const SizedBox(key: ValueKey('empty')),
-    );
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class MenuAppBar extends StatelessWidget {
   final Function(int) changePage;
@@ -67,10 +66,7 @@ class MenuAppBar extends StatelessWidget {
               },
               Text(
                 pageName,
-                style: GoogleFonts.poppins(
-                  fontSize: 30,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.w500),
               ),
             ],
           ),

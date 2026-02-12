@@ -1,7 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:arci_ombriano/Utils/event.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:arci_ombriano/Event/event_widget.dart';
 
 class EventPage extends StatefulWidget {
@@ -52,7 +51,7 @@ class _EventPageState extends State<EventPage> {
       padding: EdgeInsets.only(top: 15, left: 20),
       child: Text(
         "Prossimi Eventi",
-        style: GoogleFonts.poppins(
+        style: TextStyle(
           fontSize: 42,
           fontWeight: FontWeight.bold,
           color: color,
@@ -74,7 +73,7 @@ class _EventPageState extends State<EventPage> {
       padding: EdgeInsets.only(left: 35),
       child: Text(
         dateString,
-        style: GoogleFonts.poppins(
+        style: TextStyle(
           fontSize: 32,
           fontWeight: FontWeight.w600,
           color: color,

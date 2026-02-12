@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:arci_ombriano/Event/info_page.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class EventWidget extends StatefulWidget {
   const EventWidget({
@@ -56,7 +55,7 @@ class _EventWidgetState extends State<EventWidget> {
             //Title Event
             Text(
               widget.nameEvent,
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w600,
               ),
@@ -66,7 +65,7 @@ class _EventWidgetState extends State<EventWidget> {
             //Description
             Text(
               widget.description,
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
               ),
@@ -94,7 +93,7 @@ class _EventWidgetState extends State<EventWidget> {
                 const SizedBox(width: 8),
                 Text(
                   timeString,
-                  style: GoogleFonts.poppins(
+                  style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.w500,
                   ),
@@ -116,7 +115,7 @@ Widget textVolunteer(String data) {
       SizedBox(width: 3),
       Text(
         data,
-        style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.w500),
+        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
       ),
     ],
   );

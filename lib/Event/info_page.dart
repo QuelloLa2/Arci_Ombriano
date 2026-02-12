@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class InformationPage extends StatefulWidget {
   final String titleEvent;
@@ -44,7 +43,7 @@ class _InformationPageState extends State<InformationPage> {
       ),
       title: Text(
         widget.titleEvent,
-        style: GoogleFonts.poppins(fontSize: 28, fontWeight: FontWeight.w600),
+        style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600),
       ),
     );
   }
@@ -87,7 +86,7 @@ class _InformationPageState extends State<InformationPage> {
   //Description
 
   Widget _description(String data) {
-    return Text(data, style: GoogleFonts.poppins(fontSize: 22, height: 1.45));
+    return Text(data, style: TextStyle(fontSize: 22, height: 1.45));
   }
 
   //Title Volunteer
@@ -96,7 +95,7 @@ class _InformationPageState extends State<InformationPage> {
     return ListTile(
       leading: Text(
         data,
-        style: GoogleFonts.poppins(fontSize: 28, fontWeight: FontWeight.w600),
+        style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600),
         maxLines: 8,
         overflow: TextOverflow.ellipsis,
       ),
@@ -137,7 +136,7 @@ class _InformationPageState extends State<InformationPage> {
             SizedBox(width: 10),
             Text(
               volunteer,
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w600,
               ),
@@ -145,7 +144,7 @@ class _InformationPageState extends State<InformationPage> {
             Expanded(child: SizedBox()),
             Text(
               textVolunteer,
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w500,
                 color: Color(0xFF181818),
