@@ -10,12 +10,12 @@ class AddEventButton extends StatefulWidget {
 class _AddEventButtonState extends State<AddEventButton> {
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton.large(
+    return FloatingActionButton(
       shape: CircleBorder(),
       onPressed: () {
         print("Ciao");
       },
-      child: Icon(Icons.menu, color: Colors.white),
+      child: Icon(Icons.add, color: Colors.white),
     );
   }
 }

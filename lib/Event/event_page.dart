@@ -31,7 +31,7 @@ class _EventPageState extends State<EventPage> {
                     nameEvent: event.nameEvent,
                     description: event.description,
                     time: event.timeEvent,
-                    mapVolunteer: event.mapVolunteers,
+                    mapVolunteers: event.mapVolunteers,
                     primary: mainColor,
                   ),
                 ],

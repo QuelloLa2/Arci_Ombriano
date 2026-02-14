@@ -89,14 +89,10 @@ class _CalendarPageState extends State<CalendarPage> {
         color: Colors.black,
         size: 32,
       ),
-
-      /*
-      titleTextFormatter: (date, locale) =>
-          DateFormat.yMMMM(locale).format(date),
-      */
       titleTextFormatter: (date, locale) =>
           DateFormat("MMM", 'it_IT').format(date).toUpperCase()[0] +
-          DateFormat("MMMM", 'it_IT').format(date).substring(1),
+          DateFormat("MMMM ", 'it_IT').format(date).substring(1) +
+          DateFormat.y(locale).format(date),
     );
   }
 

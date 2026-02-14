@@ -2,7 +2,7 @@ import 'package:arci_ombriano/Account/account_page.dart';
 import 'package:arci_ombriano/Calendar/calendar_page.dart';
 import 'package:arci_ombriano/Event/event_page.dart';
 import 'package:arci_ombriano/Appbar/appbar.dart';
-import 'package:arci_ombriano/Utils/menu_button.dart';
+import 'package:arci_ombriano/menu_button.dart';
 import 'package:arci_ombriano/app_theme.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter/material.dart';
@@ -40,17 +40,17 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<String> titleText = ["Eventi", "Calendario", "Account"];
+  List<String> titleText = ["Calendario", "Eventi", "Account"];
 
-  int _activepage = 0;
+  int _activepage = 1;
 
   @override
   Widget build(BuildContext context) {
     exampleEvents.sort((a, b) => a.timeEvent.compareTo(b.timeEvent));
 
     final List<Widget> pages = [
-      EventPage(listEvents: exampleEvents),
       CalendarPage(listEvents: exampleEvents),
+      EventPage(listEvents: exampleEvents),
       AccountPage(),
     ];
 
@@ -58,26 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: TopBar(titlePage: titleText[_activepage]),
       body: Stack(children: [pages.elementAt(_activepage)]),
       floatingActionButton: AddEventButton(),
-      bottomNavigationBar: BottomNavigationBar(
-        showSelectedLabels: true,
-        showUnselectedLabels: true,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.event_note_rounded),
-            label: "Eventi",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_month),
-            label: "Calendario",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle_rounded),
-            label: "Account",
-          ),
-        ],
-        currentIndex: _activepage,
-        onTap: _onItemTapped,
-      ),
+      bottomNavigationBar: _bottomBar(),
     );
   }
 
@@ -85,5 +66,28 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _activepage = index;
     });
+  }
+
+  Widget _bottomBar() {
+    return BottomNavigationBar(
+      selectedItemColor: Theme.of(context).colorScheme.primary,
+      unselectedItemColor: Color(0xFF7B8284),
+      showSelectedLabels: true,
+      showUnselectedLabels: true,
+      iconSize: 32,
+      selectedFontSize: 18,
+      enableFeedback: true,
+      items: [
+        _item(Icons.calendar_month, "Calendario"),
+        _item(Icons.event_note, "Eventi"),
+        _item(Icons.account_circle_rounded, "Account"),
+      ],
+      currentIndex: _activepage,
+      onTap: _onItemTapped,
+    );
+  }
+
+  BottomNavigationBarItem _item(IconData icon, String data) {
+    return BottomNavigationBarItem(icon: Icon(icon), label: data);
   }
 }

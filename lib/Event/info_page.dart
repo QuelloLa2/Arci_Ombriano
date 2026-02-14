@@ -65,7 +65,7 @@ class _InformationPageState extends State<InformationPage> {
                   Column(
                     children: [
                       ...widget.mapVolunteers.entries.map(
-                        (work) => _buttonVolunteer(
+                        (work) => _nameVolunteer(
                           work.key,
                           work.value['Current'] ?? 0,
                           work.value['Max'] ?? 0,
@@ -99,59 +99,51 @@ class _InformationPageState extends State<InformationPage> {
         maxLines: 8,
         overflow: TextOverflow.ellipsis,
       ),
-      trailing: IconButton(onPressed: () {}, icon: Icon(Icons.group, size: 30)),
     );
   }
 
   // Button Volunteer
 
-  Widget _buttonVolunteer(String volunteer, int nVolunteer, int maxVolunteer) {
+  Widget _nameVolunteer(String volunteer, int nVolunteer, int maxVolunteer) {
     String textVolunteer = "$nVolunteer/$maxVolunteer";
 
     return Container(
-      height: 60,
       padding: EdgeInsets.only(bottom: 10),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+      child: Card(
+        margin: EdgeInsets.all(1),
+        elevation: 5,
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  SizedBox(width: 7.5),
+                  Text(
+                    volunteer,
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+                  ),
+                  Expanded(child: SizedBox()),
+                  Text(
+                    textVolunteer,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFF181818),
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                ],
+              ),
+              Column(
+                children: [
+                  Text("Persona 1"),
+                  Text("Persona 2"),
+                  Text("Persona 3"),
+                ],
+              ),
+            ],
           ),
-          elevation: 3.5,
-          shadowColor: Color.fromARGB(255, 0, 0, 0),
-        ),
-        onPressed: () {
-          setState(() {
-            if (mapIsSelected[volunteer] == true) {
-              mapIsSelected.updateAll((work, _) => false);
-            } else {
-              mapIsSelected.updateAll((work, _) => work == volunteer);
-            }
-          });
-        },
-        child: Row(
-          children: [
-            mapIsSelected[volunteer] == true
-                ? Icon(Icons.circle, size: 32)
-                : Icon(Icons.circle_outlined, size: 32),
-            SizedBox(width: 10),
-            Text(
-              volunteer,
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            Expanded(child: SizedBox()),
-            Text(
-              textVolunteer,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w500,
-                color: Color(0xFF181818),
-              ),
-            ),
-            SizedBox(width: 10),
-          ],
         ),
       ),
     );

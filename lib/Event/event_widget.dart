@@ -8,14 +8,14 @@ class EventWidget extends StatefulWidget {
     required this.nameEvent,
     required this.description,
     required this.time,
-    required this.mapVolunteer,
+    required this.mapVolunteers,
     required this.primary,
   });
 
   final String nameEvent;
   final String description;
   final DateTime time;
-  final Map<String, Map<String, int>> mapVolunteer;
+  final Map<String, Map<String, int>> mapVolunteers;
   final Color primary;
 
   @override
@@ -23,6 +23,14 @@ class EventWidget extends StatefulWidget {
 }
 
 class _EventWidgetState extends State<EventWidget> {
+  late Map<String, bool> mapIsSelected = {};
+
+  @override
+  void initState() {
+    super.initState();
+    mapIsSelected = {for (final key in widget.mapVolunteers.keys) key: false};
+  }
+
   @override
   Widget build(BuildContext context) {
     String timeString = DateFormat("HH:mm").format(widget.time);
@@ -35,7 +43,7 @@ class _EventWidgetState extends State<EventWidget> {
             builder: (_) => InformationPage(
               titleEvent: widget.nameEvent,
               descEvent: widget.description,
-              mapVolunteers: widget.mapVolunteer,
+              mapVolunteers: widget.mapVolunteers,
             ),
           ),
         );
@@ -55,20 +63,14 @@ class _EventWidgetState extends State<EventWidget> {
             //Title Event
             Text(
               widget.nameEvent,
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 6),
 
             //Description
             Text(
               widget.description,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
             ),
@@ -79,7 +81,7 @@ class _EventWidgetState extends State<EventWidget> {
               scrollDirection: Axis.horizontal,
               child: Row(
                 spacing: 20,
-                children: widget.mapVolunteer.keys
+                children: widget.mapVolunteers.keys
                     .map((work) => textVolunteer(work))
                     .toList(),
               ),
@@ -93,10 +95,7 @@ class _EventWidgetState extends State<EventWidget> {
                 const SizedBox(width: 8),
                 Text(
                   timeString,
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
                 ),
               ],
             ),
@@ -105,18 +104,41 @@ class _EventWidgetState extends State<EventWidget> {
       ),
     );
   }
+
+  Widget textVolunteer(String volunteer) {
+    return TextButton(
+      onPressed: () {
+        setState(() {
+          if (mapIsSelected[volunteer] == true) {
+            mapIsSelected.updateAll((work, _) => false);
+          } else {
+            mapIsSelected.updateAll((work, _) => work == volunteer);
+          }
+        });
+      },
+      style: TextButton.styleFrom(padding: EdgeInsets.all(4)),
+      child: Row(
+        children: [
+          mapIsSelected[volunteer] == true
+              ? Icon(
+                  Icons.radio_button_checked_outlined,
+                  size: 32,
+                  color: Colors.black,
+                )
+              : Icon(
+                  Icons.radio_button_off_outlined,
+                  size: 32,
+                  color: Colors.black,
+                ),
+          SizedBox(width: 3),
+          Text(
+            volunteer,
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 //Create Volunteer Row
-Widget textVolunteer(String data) {
-  return Row(
-    children: [
-      Icon(Icons.radio_button_checked_outlined, color: Colors.black),
-      SizedBox(width: 3),
-      Text(
-        data,
-        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-      ),
-    ],
-  );
-}
