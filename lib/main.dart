@@ -1,4 +1,4 @@
-import 'package:arci_ombriano/Account/account_page.dart';
+import 'package:arci_ombriano/Account/signup.dart';
 import 'package:arci_ombriano/Calendar/calendar_page.dart';
 import 'package:arci_ombriano/Event/event_page.dart';
 import 'package:arci_ombriano/Appbar/appbar.dart';
@@ -74,8 +74,8 @@ class _MyHomePageState extends State<MyHomePage> {
       unselectedItemColor: Color(0xFF7B8284),
       showSelectedLabels: true,
       showUnselectedLabels: true,
-      iconSize: 32,
-      selectedFontSize: 18,
+      iconSize: 26,
+      selectedFontSize: 16,
       enableFeedback: true,
       items: [
         _item(Icons.calendar_month, "Calendario"),
