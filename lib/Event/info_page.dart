@@ -39,11 +39,11 @@ class _InformationPageState extends State<InformationPage> {
         onPressed: () {
           Navigator.pop(context);
         },
-        icon: Icon(Icons.keyboard_arrow_left_rounded, size: 32),
+        icon: Icon(Icons.keyboard_arrow_left_rounded, size: 28),
       ),
       title: Text(
         widget.titleEvent,
-        style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600),
+        style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
       ),
     );
   }
@@ -59,9 +59,9 @@ class _InformationPageState extends State<InformationPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _description(widget.descEvent),
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 12),
                   _volunteer("Volontariato"),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 15),
                   Column(
                     children: [
                       ...widget.mapVolunteers.entries.map(
@@ -73,7 +73,7 @@ class _InformationPageState extends State<InformationPage> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 15),
+                  SizedBox(height: 12),
                 ],
               ),
             ),
@@ -86,7 +86,7 @@ class _InformationPageState extends State<InformationPage> {
   //Description
 
   Widget _description(String data) {
-    return Text(data, style: TextStyle(fontSize: 22, height: 1.45));
+    return Text(data, style: TextStyle(fontSize: 19, height: 1.45));
   }
 
   //Title Volunteer
@@ -95,7 +95,7 @@ class _InformationPageState extends State<InformationPage> {
     return ListTile(
       leading: Text(
         data,
-        style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600),
+        style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
         maxLines: 8,
         overflow: TextOverflow.ellipsis,
       ),
@@ -121,13 +121,13 @@ class _InformationPageState extends State<InformationPage> {
                   SizedBox(width: 7.5),
                   Text(
                     volunteer,
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+                    style: TextStyle(fontSize: 19, fontWeight: FontWeight.w600),
                   ),
                   Expanded(child: SizedBox()),
                   Text(
                     textVolunteer,
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 17,
                       fontWeight: FontWeight.w500,
                       color: Color(0xFF181818),
                     ),

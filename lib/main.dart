@@ -1,6 +1,7 @@
 import 'package:arci_ombriano/Account/signup.dart';
 import 'package:arci_ombriano/Calendar/calendar_page.dart';
 import 'package:arci_ombriano/Event/event_page.dart';
+import 'package:arci_ombriano/Utils/event.dart';
 import 'package:arci_ombriano/Appbar/appbar.dart';
 import 'package:arci_ombriano/menu_button.dart';
 import 'package:arci_ombriano/app_theme.dart';
@@ -25,15 +26,13 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: appTheme,
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -50,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     final List<Widget> pages = [
       CalendarPage(listEvents: exampleEvents),
-      EventPage(listEvents: exampleEvents),
+      EventPage(listEvents: exampleEvents, modifyEvent: _editEvent),
       AccountPage(),
     ];
 
@@ -74,8 +73,8 @@ class _MyHomePageState extends State<MyHomePage> {
       unselectedItemColor: Color(0xFF7B8284),
       showSelectedLabels: true,
       showUnselectedLabels: true,
-      iconSize: 26,
-      selectedFontSize: 16,
+      iconSize: 24,
+      selectedFontSize: 15,
       enableFeedback: true,
       items: [
         _item(Icons.calendar_month, "Calendario"),
@@ -89,5 +88,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   BottomNavigationBarItem _item(IconData icon, String data) {
     return BottomNavigationBarItem(icon: Icon(icon), label: data);
+  }
+
+  void _editEvent(int index, Event updatedEvent) {
+    setState(() {
+      exampleEvents[index] = updatedEvent;
+    });
   }
 }

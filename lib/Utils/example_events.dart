@@ -1,15 +1,15 @@
 import 'package:arci_ombriano/Utils/event.dart';
 
-final String exampleText =
+String exampleText =
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eleifend, leo sed commodo dignissim, arcu elit egestas magna, vel vestibulum ligula velit et dolor. Mauris placerat eget enim eu pulvinar. Fusce condimentum maximus neque vel ullamcorper. Proin tellus augue, aliquam scelerisque tellus eu, facilisis pulvinar leo. Nunc consectetur velit eu ultrices pretium. Nunc tempus eu velit pretium pellentesque. Vestibulum condimentum ultricies enim, vel aliquam lacus malesuada at. Nam posuere, tortor non sed";
 
-final Map<String, Map<String, int>> exampleMapVolunteers = {
+Map<String, Map<String, int>> exampleMapVolunteers = {
   'Cuoco': {'Current': 2, 'Max': 2},
   'Audio': {'Current': 2, 'Max': 3},
   'Cameriere': {'Current': 1, 'Max': 4},
 };
 
-final List<Event> exampleEvents = [
+List<Event> exampleEvents = [
   Event(
     id: 0,
     nameEvent: "Riunione",

@@ -4,9 +4,14 @@ import 'package:arci_ombriano/Utils/event.dart';
 import 'package:arci_ombriano/Event/event_widget.dart';
 
 class EventPage extends StatefulWidget {
-  const EventPage({super.key, required this.listEvents});
+  const EventPage({
+    super.key,
+    required this.listEvents,
+    required this.modifyEvent,
+  });
 
   final List<Event> listEvents;
+  final Function(int, Event) modifyEvent;
 
   @override
   State<EventPage> createState() => _EventPageState();
@@ -28,11 +33,10 @@ class _EventPageState extends State<EventPage> {
                 children: [
                   _isSameDate(index),
                   EventWidget(
-                    nameEvent: event.nameEvent,
-                    description: event.description,
-                    time: event.timeEvent,
-                    mapVolunteers: event.mapVolunteers,
+                    event: event,
+                    index: index,
                     primary: mainColor,
+                    modifyEvent: widget.modifyEvent,
                   ),
                 ],
               );
@@ -52,10 +56,10 @@ class _EventPageState extends State<EventPage> {
       child: Text(
         "Prossimi Eventi",
         style: TextStyle(
-          fontSize: 42,
+          fontSize: 36,
           fontWeight: FontWeight.bold,
           color: color,
-          letterSpacing: -0.7,
+          letterSpacing: -0.6,
         ),
       ),
     );
@@ -70,11 +74,11 @@ class _EventPageState extends State<EventPage> {
     return Container(
       width: double.infinity,
       alignment: Alignment.centerLeft,
-      padding: EdgeInsets.only(left: 35),
+      padding: EdgeInsets.only(left: 20),
       child: Text(
         dateString,
         style: TextStyle(
-          fontSize: 32,
+          fontSize: 24,
           fontWeight: FontWeight.w600,
           color: color,
           letterSpacing: -0.7,
@@ -95,6 +99,6 @@ class _EventPageState extends State<EventPage> {
         )) {
       return _dateTitle(widget.listEvents[index].dateEvent, dateColor);
     }
-    return const SizedBox(height: 15);
+    return const SizedBox(height: 7.5);
   }
 }

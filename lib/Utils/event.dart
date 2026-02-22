@@ -1,10 +1,10 @@
 class Event {
   final int id;
   String nameEvent;
-  DateTime dateEvent; // dd/mm/yy
-  DateTime timeEvent; // dd/mm/yy hh:mm
+  DateTime dateEvent;
+  DateTime timeEvent;
   String description;
-  Map<String, Map<String, int>> mapVolunteers;
+  final Map<String, Map<String, int>> mapVolunteers;
 
   Event({
     required this.id,
