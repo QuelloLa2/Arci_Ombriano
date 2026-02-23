@@ -14,6 +14,21 @@ class Event {
     required this.mapVolunteers,
   }) : dateEvent = DateTime(timeEvent.year, timeEvent.month, timeEvent.day);
 
+  Event copyWith({
+    String? nameEvent,
+    DateTime? timeEvent,
+    String? description,
+    Map<String, Map<String, int>>? mapVolunteers,
+  }) {
+    return Event(
+      id: id,
+      nameEvent: nameEvent ?? this.nameEvent,
+      timeEvent: timeEvent ?? this.timeEvent,
+      description: description ?? this.description,
+      mapVolunteers: mapVolunteers ?? this.mapVolunteers,
+    );
+  }
+
   @override
   String toString() => nameEvent;
 }

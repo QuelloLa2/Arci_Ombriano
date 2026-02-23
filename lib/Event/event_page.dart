@@ -1,3 +1,5 @@
+//TODO: differenziare prossime / vecchie rispetto al giorno attuale
+
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:arci_ombriano/Utils/event.dart';

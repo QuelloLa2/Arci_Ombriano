@@ -14,36 +14,29 @@ class EventWidget extends StatefulWidget {
   });
 
   final int index;
-  final Function(int, Event) modifyEvent;
   final Event event;
   final Color primary;
+  final Function(int, Event) modifyEvent;
 
   @override
   State<EventWidget> createState() => _EventWidgetState();
 }
 
 class _EventWidgetState extends State<EventWidget> {
-  late String nameEvent;
-  late String description;
-  late DateTime time;
-  late Map<String, Map<String, int>> mapVolunteers;
-
   late Map<String, bool> mapIsSelected = {};
 
   @override
   void initState() {
-    nameEvent = widget.event.nameEvent;
-    description = widget.event.description;
-    time = widget.event.timeEvent;
-    mapVolunteers = widget.event.mapVolunteers;
-
+    mapIsSelected = {
+      for (final key in widget.event.mapVolunteers.keys) key: false,
+    };
     super.initState();
-    mapIsSelected = {for (final key in mapVolunteers.keys) key: false};
   }
 
   @override
   Widget build(BuildContext context) {
-    String timeString = DateFormat("HH:mm").format(time);
+    Event event = widget.event;
+    String timeString = DateFormat("HH:mm").format(event.timeEvent);
 
     return InkWell(
       enableFeedback: false,
@@ -51,9 +44,9 @@ class _EventWidgetState extends State<EventWidget> {
         Navigator.of(context, rootNavigator: true).push(
           MaterialPageRoute(
             builder: (_) => InformationPage(
-              titleEvent: nameEvent,
-              descEvent: description,
-              mapVolunteers: mapVolunteers,
+              titleEvent: event.nameEvent,
+              descEvent: event.description,
+              mapVolunteers: event.mapVolunteers,
             ),
           ),
         );
@@ -74,7 +67,7 @@ class _EventWidgetState extends State<EventWidget> {
             Row(
               children: [
                 Text(
-                  nameEvent,
+                  event.nameEvent,
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
                 ),
                 Expanded(child: SizedBox()),
@@ -86,7 +79,7 @@ class _EventWidgetState extends State<EventWidget> {
 
             //Description
             Text(
-              description,
+              event.description,
               style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
               maxLines: 4,
               overflow: TextOverflow.ellipsis,
@@ -97,7 +90,7 @@ class _EventWidgetState extends State<EventWidget> {
               scrollDirection: Axis.horizontal,
               child: Row(
                 spacing: 5,
-                children: mapVolunteers.keys
+                children: event.mapVolunteers.keys
                     .map((work) => textVolunteer(work))
                     .toList(),
               ),

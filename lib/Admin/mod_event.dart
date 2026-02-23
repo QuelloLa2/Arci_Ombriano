@@ -1,5 +1,8 @@
+//TODO: add time field
+
 import 'package:arci_ombriano/Utils/event.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ModEvent extends StatefulWidget {
   const ModEvent({super.key, this.event});
@@ -11,12 +14,28 @@ class ModEvent extends StatefulWidget {
 
 class _ModEventState extends State<ModEvent> {
   late final TextEditingController _titleController;
+  late final TextEditingController _descController;
+  late final TextEditingController _dateController;
+  late final TextEditingController _timeController;
+
+  DateFormat stdDate = DateFormat('dd/MM/yyyy');
+  DateFormat stdTime = DateFormat('HH:mm');
+  DateFormat stdDateTime = DateFormat('dd-MM-yyyy HH:mm');
 
   @override
   void initState() {
     super.initState();
     _titleController = TextEditingController(
       text: widget.event?.nameEvent ?? '',
+    );
+    _descController = TextEditingController(
+      text: widget.event?.description ?? '',
+    );
+    _dateController = TextEditingController(
+      text: stdDate.format(widget.event?.dateEvent ?? DateTime.now()),
+    );
+    _timeController = TextEditingController(
+      text: stdTime.format(widget.event?.timeEvent ?? DateTime.now()),
     );
   }
 
@@ -49,17 +68,24 @@ class _ModEventState extends State<ModEvent> {
 
   Widget _body() {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
-          Expanded(child: _textField("Titolo", _titleController)),
+          _inputField("Titolo", _titleController),
+          SizedBox(height: 25),
+          _descField("Descrizione", _descController),
+          SizedBox(height: 25),
+          _dateField("Data", _dateController),
+          Expanded(child: SizedBox()),
           Row(spacing: 7, children: [_deleteButton(), _confermButton()]),
         ],
       ),
     );
   }
 
-  Widget _textField(String label, TextEditingController controller) {
+  //Title Field
+
+  Widget _inputField(String label, TextEditingController controller) {
     return TextField(
       controller: controller,
       decoration: InputDecoration(
@@ -71,6 +97,77 @@ class _ModEventState extends State<ModEvent> {
       ),
     );
   }
+
+  //Description Field
+
+  Widget _descField(String label, TextEditingController controller) {
+    return TextField(
+      keyboardType: TextInputType.multiline,
+      maxLines: 10,
+      maxLength: null,
+      controller: controller,
+      decoration: InputDecoration(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          gapPadding: 7.5,
+        ),
+        labelText: label,
+      ),
+    );
+  }
+
+  // Date Field
+  Widget _dateField(String label, TextEditingController controller) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        border: OutlineInputBorder(),
+        labelText: label,
+      ),
+      readOnly: true,
+      onTap: () async {
+        DateTime? pickDate = await showDatePicker(
+          context: context,
+          locale: const Locale('it', 'IT'),
+          initialDate: widget.event?.dateEvent ?? DateTime.now(),
+          firstDate: DateTime(2026, 1, 1),
+          lastDate: DateTime(2030, 12, 31),
+        );
+
+        if (pickDate != null) {
+          setState(() {
+            controller.text = stdDate.format(pickDate);
+          });
+        }
+      },
+    );
+  }
+
+  /*
+  // Time Field
+  Widget _timeField(String label, TextEditingController controller) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        border: OutlineInputBorder(),
+        labelText: label,
+      ),
+      readOnly: true,
+      onTap: () async {
+        TimeOfDay? pickDate = await showTimePicker(
+          context: context,
+          initialTime: widget.event?.dateEvent ?? DateTime.now(),
+        );
+
+        if (pickDate != null) {
+          setState(() {
+            controller.text = stdTime.format(pickDate);
+          });
+        }
+      },
+    );
+  }
+  */
 
   Widget _deleteButton() {
     Color backColor = Theme.of(context).colorScheme.primary;
@@ -97,11 +194,31 @@ class _ModEventState extends State<ModEvent> {
         height: 60,
         child: ElevatedButton(
           onPressed: () {
-            setState(() {
-              widget.event!.nameEvent = _titleController.text;
-            });
+            Event? event = widget.event;
 
-            Navigator.pop(context);
+            DateTime newDateTime = _formatDate(
+              _dateController.text,
+              _timeController.text,
+            );
+
+            if (event != null) {
+              Event updateEvent = event.copyWith(
+                nameEvent: _titleController.text,
+                description: _descController.text,
+                timeEvent: newDateTime,
+              );
+              Navigator.pop(context, updateEvent);
+            }
+            /*
+            if (event == null) {
+              Event newEvent = Event(
+                nameEvent: _titleController.text,
+                timeEvent: timeEvent,
+                description: description,
+                mapVolunteers: mapVolunteers,
+              );
+            }
+            */
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: backColor,
@@ -110,6 +227,19 @@ class _ModEventState extends State<ModEvent> {
           child: Text("Conferma", style: TextStyle(fontSize: 20)),
         ),
       ),
+    );
+  }
+
+  DateTime _formatDate(String date, String time) {
+    DateTime pickedDate = stdDate.parse(date);
+    DateTime pickedTime = stdTime.parse(time);
+
+    return DateTime(
+      pickedDate.year,
+      pickedDate.month,
+      pickedDate.day,
+      pickedTime.hour,
+      pickedTime.minute,
     );
   }
 }
