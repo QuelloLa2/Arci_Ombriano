@@ -21,4 +21,8 @@ final appTheme = ThemeData(
     elevation: 0,
     surfaceTintColor: Colors.transparent,
   ),
+
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(backgroundColor: Color(0xFFC74E43)),
+  ),
 );
