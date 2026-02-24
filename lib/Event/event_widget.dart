@@ -1,22 +1,22 @@
+import 'package:arci_ombriano/Event/info_page.dart';
+import 'package:arci_ombriano/Admin/mod_event.dart';
+import 'package:arci_ombriano/Utils/event.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:arci_ombriano/Event/info_page.dart';
 
 class EventWidget extends StatefulWidget {
   const EventWidget({
     super.key,
-    required this.nameEvent,
-    required this.description,
-    required this.time,
-    required this.mapVolunteers,
+    required this.index,
+    required this.event,
     required this.primary,
+    required this.modifyEvent,
   });
 
-  final String nameEvent;
-  final String description;
-  final DateTime time;
-  final Map<String, Map<String, int>> mapVolunteers;
+  final int index;
+  final Event event;
   final Color primary;
+  final Function(int, Event) modifyEvent;
 
   @override
   State<EventWidget> createState() => _EventWidgetState();
@@ -27,13 +27,16 @@ class _EventWidgetState extends State<EventWidget> {
 
   @override
   void initState() {
+    mapIsSelected = {
+      for (final key in widget.event.mapVolunteers.keys) key: false,
+    };
     super.initState();
-    mapIsSelected = {for (final key in widget.mapVolunteers.keys) key: false};
   }
 
   @override
   Widget build(BuildContext context) {
-    String timeString = DateFormat("HH:mm").format(widget.time);
+    Event event = widget.event;
+    String timeString = DateFormat("HH:mm").format(event.timeEvent);
 
     return InkWell(
       enableFeedback: false,
@@ -41,16 +44,16 @@ class _EventWidgetState extends State<EventWidget> {
         Navigator.of(context, rootNavigator: true).push(
           MaterialPageRoute(
             builder: (_) => InformationPage(
-              titleEvent: widget.nameEvent,
-              descEvent: widget.description,
-              mapVolunteers: widget.mapVolunteers,
+              titleEvent: event.nameEvent,
+              descEvent: event.description,
+              mapVolunteers: event.mapVolunteers,
             ),
           ),
         );
       },
       child: Container(
-        margin: const EdgeInsets.only(left: 14, right: 14, bottom: 14, top: 5),
-        padding: const EdgeInsets.only(left: 14, right: 14, top: 14, bottom: 8),
+        margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 3),
+        padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 4),
         decoration: BoxDecoration(
           color: Color(0xFFF5F5F5),
           border: Border.all(color: const Color(0x68232120), width: 2),
@@ -61,42 +64,49 @@ class _EventWidgetState extends State<EventWidget> {
           mainAxisSize: MainAxisSize.min,
           children: [
             //Title Event
-            Text(
-              widget.nameEvent,
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600),
+            Row(
+              children: [
+                Text(
+                  event.nameEvent,
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                ),
+                Expanded(child: SizedBox()),
+
+                //TODO: logica utente / admin del pulsante
+                _editButton(),
+              ],
             ),
-            const SizedBox(height: 6),
 
             //Description
             Text(
-              widget.description,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-              maxLines: 3,
+              event.description,
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+              maxLines: 4,
               overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 6),
 
             //Volunteers
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
-                spacing: 20,
-                children: widget.mapVolunteers.keys
+                spacing: 5,
+                children: event.mapVolunteers.keys
                     .map((work) => textVolunteer(work))
                     .toList(),
               ),
             ),
-            const SizedBox(height: 6),
+
+            // Time
             Row(
               children: [
-                const SizedBox(width: 10),
-                // Time
-                Icon(Icons.access_time, size: 24, color: Color(0xFF000000)),
+                const SizedBox(width: 2),
+                Icon(Icons.access_time, size: 20, color: Color(0xFF000000)),
                 const SizedBox(width: 8),
                 Text(
                   timeString,
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                 ),
+                const Expanded(child: SizedBox()),
               ],
             ),
           ],
@@ -122,23 +132,44 @@ class _EventWidgetState extends State<EventWidget> {
           mapIsSelected[volunteer] == true
               ? Icon(
                   Icons.radio_button_checked_outlined,
-                  size: 32,
+                  size: 24,
                   color: Colors.black,
                 )
               : Icon(
                   Icons.radio_button_off_outlined,
-                  size: 32,
+                  size: 24,
                   color: Colors.black,
                 ),
           SizedBox(width: 3),
           Text(
             volunteer,
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
           ),
         ],
       ),
     );
   }
-}
 
-//Create Volunteer Row
+  Widget _editButton() {
+    Color mainColor = Theme.of(context).colorScheme.primary;
+
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: mainColor,
+        shape: CircleBorder(),
+      ),
+      onPressed: () {
+        Navigator.of(context, rootNavigator: true)
+            .push(
+              MaterialPageRoute(builder: (_) => ModEvent(event: widget.event)),
+            )
+            .then((updatedEvent) {
+              if (updatedEvent != null) {
+                widget.modifyEvent(widget.index, updatedEvent);
+              }
+            });
+      },
+      child: Icon(Icons.mode_edit_outline_rounded, color: Colors.white),
+    );
+  }
+}

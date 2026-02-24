@@ -1,3 +1,4 @@
+import 'package:arci_ombriano/Admin/mod_event.dart';
 import 'package:flutter/material.dart';
 
 class AddEventButton extends StatefulWidget {
@@ -13,7 +14,10 @@ class _AddEventButtonState extends State<AddEventButton> {
     return FloatingActionButton(
       shape: CircleBorder(),
       onPressed: () {
-        print("Ciao");
+        Navigator.of(
+          context,
+          rootNavigator: true,
+        ).push(MaterialPageRoute(builder: (_) => ModEvent()));
       },
       child: Icon(Icons.add, color: Colors.white),
     );

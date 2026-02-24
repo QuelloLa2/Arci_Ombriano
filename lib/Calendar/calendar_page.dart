@@ -82,12 +82,12 @@ class _CalendarPageState extends State<CalendarPage> {
       leftChevronIcon: Icon(
         Icons.keyboard_arrow_left_outlined,
         color: Colors.black,
-        size: 32,
+        size: 28,
       ),
       rightChevronIcon: Icon(
         Icons.keyboard_arrow_right_outlined,
         color: Colors.black,
-        size: 32,
+        size: 28,
       ),
       titleTextFormatter: (date, locale) =>
           DateFormat("MMM", 'it_IT').format(date).toUpperCase()[0] +
@@ -109,8 +109,8 @@ class _CalendarPageState extends State<CalendarPage> {
         color: mainColor,
         shape: BoxShape.circle,
       ),
-      weekendTextStyle: TextStyle(color: mainColor, fontSize: 18),
-      defaultTextStyle: TextStyle(fontSize: 18),
+      weekendTextStyle: TextStyle(color: mainColor, fontSize: 15),
+      defaultTextStyle: TextStyle(fontSize: 15),
     );
   }
 
@@ -145,18 +145,21 @@ class _CalendarPageState extends State<CalendarPage> {
         borderRadius: BorderRadius.circular(15),
       ),
       child: ListTile(
+        //Name Event
         leading: Text(
           event.nameEvent,
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
         ),
+        //Time Event
         title: Text(
           "- ${DateFormat("HH:mm").format(event.timeEvent)}",
           style: TextStyle(
-            fontSize: 18,
+            fontSize: 16,
             letterSpacing: -0.5,
             fontWeight: FontWeight.w500,
           ),
         ),
+        // Icona
         trailing: Icon(Icons.keyboard_arrow_right_rounded, size: 32),
         onTap: () {
           Navigator.of(context, rootNavigator: true).push(

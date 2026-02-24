@@ -1,12 +1,13 @@
 import 'package:arci_ombriano/Account/signup.dart';
 import 'package:arci_ombriano/Calendar/calendar_page.dart';
 import 'package:arci_ombriano/Event/event_page.dart';
+import 'package:arci_ombriano/Utils/event.dart';
 import 'package:arci_ombriano/Appbar/appbar.dart';
-import 'package:arci_ombriano/menu_button.dart';
+import 'package:arci_ombriano/Utils/menu_button.dart';
 import 'package:arci_ombriano/app_theme.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:arci_ombriano/Utils/example_events.dart';
 
 void main() async {
@@ -25,32 +26,46 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: appTheme,
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      locale: const Locale('it', 'IT'),
+      supportedLocales: const [Locale('it', 'IT')],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  late List<Event> events;
+
   List<String> titleText = ["Calendario", "Eventi", "Account"];
 
   int _activepage = 1;
 
   @override
+  void initState() {
+    events = List.from(exampleEvents);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    exampleEvents.sort((a, b) => a.timeEvent.compareTo(b.timeEvent));
+    events.sort((a, b) => a.timeEvent.compareTo(b.timeEvent));
 
     final List<Widget> pages = [
-      CalendarPage(listEvents: exampleEvents),
-      EventPage(listEvents: exampleEvents),
+      CalendarPage(listEvents: events),
+      EventPage(listEvents: events, modifyEvent: _editEvent),
       AccountPage(),
     ];
 
@@ -74,8 +89,8 @@ class _MyHomePageState extends State<MyHomePage> {
       unselectedItemColor: Color(0xFF7B8284),
       showSelectedLabels: true,
       showUnselectedLabels: true,
-      iconSize: 26,
-      selectedFontSize: 16,
+      iconSize: 24,
+      selectedFontSize: 15,
       enableFeedback: true,
       items: [
         _item(Icons.calendar_month, "Calendario"),
@@ -89,5 +104,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   BottomNavigationBarItem _item(IconData icon, String data) {
     return BottomNavigationBarItem(icon: Icon(icon), label: data);
+  }
+
+  void _editEvent(int index, Event updatedEvent) {
+    setState(() {
+      events[index] = updatedEvent;
+    });
   }
 }
