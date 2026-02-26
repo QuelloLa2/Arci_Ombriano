@@ -1,5 +1,4 @@
-//TODO: add time field
-
+import 'package:arci_ombriano/Utils/example_things.dart';
 import 'package:arci_ombriano/Utils/event.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -75,7 +74,13 @@ class _ModEventState extends State<ModEvent> {
           SizedBox(height: 25),
           _descField("Descrizione", _descController),
           SizedBox(height: 25),
-          _dateField("Data", _dateController),
+          Row(
+            spacing: 20,
+            children: [
+              Expanded(child: _dateField("Data", _dateController)),
+              Expanded(child: _timeField("Ora", _timeController)),
+            ],
+          ),
           Expanded(child: SizedBox()),
           Row(spacing: 7, children: [_deleteButton(), _confermButton()]),
         ],
@@ -143,7 +148,6 @@ class _ModEventState extends State<ModEvent> {
     );
   }
 
-  /*
   // Time Field
   Widget _timeField(String label, TextEditingController controller) {
     return TextField(
@@ -154,20 +158,29 @@ class _ModEventState extends State<ModEvent> {
       ),
       readOnly: true,
       onTap: () async {
+        Event? event = widget.event;
+        TimeOfDay? time;
+
+        if (event != null) {
+          time = TimeOfDay(
+            hour: event.timeEvent.hour,
+            minute: event.timeEvent.minute,
+          );
+        }
         TimeOfDay? pickDate = await showTimePicker(
           context: context,
-          initialTime: widget.event?.dateEvent ?? DateTime.now(),
+          initialTime: time ?? TimeOfDay.now(),
         );
 
         if (pickDate != null) {
           setState(() {
-            controller.text = stdTime.format(pickDate);
+            DateTime time = DateTime(0, 0, 0, pickDate.hour, pickDate.minute);
+            controller.text = stdTime.format(time);
           });
         }
       },
     );
   }
-  */
 
   Widget _deleteButton() {
     Color backColor = Theme.of(context).colorScheme.primary;
@@ -175,7 +188,9 @@ class _ModEventState extends State<ModEvent> {
     return SizedBox(
       height: 60,
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pop(context, {'delete': true, 'event': widget.event});
+        },
         style: ElevatedButton.styleFrom(
           shape: CircleBorder(),
           backgroundColor: backColor,
@@ -207,18 +222,24 @@ class _ModEventState extends State<ModEvent> {
                 description: _descController.text,
                 timeEvent: newDateTime,
               );
-              Navigator.pop(context, updateEvent);
+              Navigator.pop(context, {'delete': false, 'event': updateEvent});
             }
-            /*
             if (event == null) {
+              exampleId++;
+
               Event newEvent = Event(
+                id: exampleId,
                 nameEvent: _titleController.text,
-                timeEvent: timeEvent,
-                description: description,
-                mapVolunteers: mapVolunteers,
+                description: _descController.text,
+                timeEvent: newDateTime,
+                mapVolunteers: {
+                  'Cuoco': {'Current': 2, 'Max': 2},
+                  'Audio': {'Current': 2, 'Max': 3},
+                  'Cameriere': {'Current': 1, 'Max': 4},
+                },
               );
+              Navigator.pop(context, {'event': newEvent});
             }
-            */
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: backColor,

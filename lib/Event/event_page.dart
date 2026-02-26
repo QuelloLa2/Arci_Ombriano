@@ -10,10 +10,14 @@ class EventPage extends StatefulWidget {
     super.key,
     required this.listEvents,
     required this.modifyEvent,
+    required this.addEvent,
+    required this.deleteEvent,
   });
 
   final List<Event> listEvents;
   final Function(int, Event) modifyEvent;
+  final Function(Event) addEvent;
+  final Function(Event) deleteEvent;
 
   @override
   State<EventPage> createState() => _EventPageState();
@@ -39,6 +43,7 @@ class _EventPageState extends State<EventPage> {
                     index: index,
                     primary: mainColor,
                     modifyEvent: widget.modifyEvent,
+                    deleteEvent: widget.deleteEvent,
                   ),
                 ],
               );

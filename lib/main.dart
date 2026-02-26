@@ -8,7 +8,7 @@ import 'package:arci_ombriano/app_theme.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:arci_ombriano/Utils/example_events.dart';
+import 'package:arci_ombriano/Utils/example_things.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -61,18 +61,23 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    events.sort((a, b) => a.timeEvent.compareTo(b.timeEvent));
+    _sortEvents();
 
     final List<Widget> pages = [
       CalendarPage(listEvents: events),
-      EventPage(listEvents: events, modifyEvent: _editEvent),
+      EventPage(
+        listEvents: events,
+        modifyEvent: _editEvent,
+        addEvent: _addEvent,
+        deleteEvent: _deleteEvent,
+      ),
       AccountPage(),
     ];
 
     return Scaffold(
       appBar: TopBar(titlePage: titleText[_activepage]),
       body: Stack(children: [pages.elementAt(_activepage)]),
-      floatingActionButton: AddEventButton(),
+      floatingActionButton: AddEventButton(addEvent: _addEvent),
       bottomNavigationBar: _bottomBar(),
     );
   }
@@ -110,5 +115,22 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       events[index] = updatedEvent;
     });
+  }
+
+  void _addEvent(Event newEvent) {
+    setState(() {
+      events.add(newEvent);
+      _sortEvents();
+    });
+  }
+
+  void _deleteEvent(Event deteledEvent) {
+    setState(() {
+      events.remove(deteledEvent);
+    });
+  }
+
+  void _sortEvents() {
+    events.sort((a, b) => a.timeEvent.compareTo(b.timeEvent));
   }
 }
