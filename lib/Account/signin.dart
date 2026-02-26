@@ -18,19 +18,15 @@ class _AccountPageState extends State<AccountPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Benvenuto!",
+            "Bentornato!",
             style: TextStyle(fontWeight: FontWeight.w600, fontSize: 40),
           ),
           SizedBox(height: 10),
-          textField("Nome"),
-          SizedBox(height: 10),
-          textField("Cognome"),
-          SizedBox(height: 10),
           textField("Email"),
           SizedBox(height: 10),
-          button("Registrati"),
+          button("Accedi"),
           SizedBox(height: 10),
-          textButton("Hai gia un account?"),
+          textButton("Non hai ancora un account?"),
         ],
       ),
     );
