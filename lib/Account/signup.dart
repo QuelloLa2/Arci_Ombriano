@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:arci_ombriano/Account/widgets.dart';
 
-class AccountPage extends StatefulWidget {
-  const AccountPage({super.key});
+class SignupPage extends StatefulWidget {
+  const SignupPage({super.key});
 
   @override
-  State<AccountPage> createState() => _AccountPageState();
+  State<SignupPage> createState() => _SignupPageState();
 }
 
-class _AccountPageState extends State<AccountPage> {
+class _SignupPageState extends State<SignupPage> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -22,15 +22,15 @@ class _AccountPageState extends State<AccountPage> {
             style: TextStyle(fontWeight: FontWeight.w600, fontSize: 40),
           ),
           SizedBox(height: 10),
-          textField("Nome"),
-          SizedBox(height: 10),
-          textField("Cognome"),
-          SizedBox(height: 10),
-          textField("Email"),
-          SizedBox(height: 10),
-          button("Registrati"),
-          SizedBox(height: 10),
-          textButton("Hai gia un account?"),
+          //textField("Nome"),
+          //SizedBox(height: 10),
+          //textField("Cognome"),
+          //SizedBox(height: 10),
+          //textField("Email"),
+          //SizedBox(height: 10),
+          //button("Registrati"),
+          //SizedBox(height: 10),
+          //textButton("Hai gia un account?"),
         ],
       ),
     );

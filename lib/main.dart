@@ -1,3 +1,4 @@
+import 'package:arci_ombriano/Account/signin.dart';
 import 'package:arci_ombriano/Account/signup.dart';
 import 'package:arci_ombriano/Calendar/calendar_page.dart';
 import 'package:arci_ombriano/Event/event_page.dart';
@@ -66,7 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final List<Widget> pages = [
       CalendarPage(listEvents: events),
       EventPage(listEvents: events, modifyEvent: _editEvent),
-      AccountPage(),
+      SigninPage(),
     ];
 
     return Scaffold(
