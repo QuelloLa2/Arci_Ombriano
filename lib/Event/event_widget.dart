@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:arci_ombriano/Event/info_page.dart';
 import 'package:arci_ombriano/Admin/mod_event.dart';
 import 'package:arci_ombriano/Utils/event.dart';
@@ -11,12 +13,14 @@ class EventWidget extends StatefulWidget {
     required this.event,
     required this.primary,
     required this.modifyEvent,
+    required this.deleteEvent,
   });
 
   final int index;
   final Event event;
   final Color primary;
   final Function(int, Event) modifyEvent;
+  final Function(Event) deleteEvent;
 
   @override
   State<EventWidget> createState() => _EventWidgetState();
@@ -163,9 +167,15 @@ class _EventWidgetState extends State<EventWidget> {
             .push(
               MaterialPageRoute(builder: (_) => ModEvent(event: widget.event)),
             )
-            .then((updatedEvent) {
-              if (updatedEvent != null) {
-                widget.modifyEvent(widget.index, updatedEvent);
+            .then((result) {
+              print(result);
+              if (result != null) {
+                if (!result['delete'] && result['event'] != null) {
+                  widget.modifyEvent(widget.index, result['event']);
+                }
+                if (result['delete'] && result['event'] != null) {
+                  widget.deleteEvent(result['event']);
+                }
               }
             });
       },

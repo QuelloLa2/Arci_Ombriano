@@ -1,4 +1,8 @@
 import 'package:arci_ombriano/Account/signin.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
 import 'package:arci_ombriano/Account/signup.dart';
 import 'package:arci_ombriano/Calendar/calendar_page.dart';
 import 'package:arci_ombriano/Event/event_page.dart';
@@ -6,10 +10,8 @@ import 'package:arci_ombriano/Utils/event.dart';
 import 'package:arci_ombriano/Appbar/appbar.dart';
 import 'package:arci_ombriano/Utils/menu_button.dart';
 import 'package:arci_ombriano/app_theme.dart';
-import 'package:intl/date_symbol_data_local.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:arci_ombriano/Utils/example_events.dart';
+import 'package:arci_ombriano/Utils/example_things.dart';
+import 'Utils/user.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,6 +50,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  User exampleUser = user;
+
   late List<Event> events;
 
   List<String> titleText = ["Calendario", "Eventi", "Account"];
@@ -62,18 +66,27 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    events.sort((a, b) => a.timeEvent.compareTo(b.timeEvent));
+    _sortEvents();
 
     final List<Widget> pages = [
       CalendarPage(listEvents: events),
       EventPage(listEvents: events, modifyEvent: _editEvent),
       SigninPage(),
+      EventPage(
+        listEvents: events,
+        modifyEvent: _editEvent,
+        addEvent: _addEvent,
+        deleteEvent: _deleteEvent,
+      ),
+      AccountPage(),
     ];
 
     return Scaffold(
       appBar: TopBar(titlePage: titleText[_activepage]),
       body: Stack(children: [pages.elementAt(_activepage)]),
-      floatingActionButton: AddEventButton(),
+      floatingActionButton: exampleUser.isAdmin
+          ? AddEventButton(addEvent: _addEvent)
+          : null,
       bottomNavigationBar: _bottomBar(),
     );
   }
@@ -111,5 +124,22 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       events[index] = updatedEvent;
     });
+  }
+
+  void _addEvent(Event newEvent) {
+    setState(() {
+      events.add(newEvent);
+      _sortEvents();
+    });
+  }
+
+  void _deleteEvent(Event deteledEvent) {
+    setState(() {
+      events.remove(deteledEvent);
+    });
+  }
+
+  void _sortEvents() {
+    events.sort((a, b) => a.timeEvent.compareTo(b.timeEvent));
   }
 }
