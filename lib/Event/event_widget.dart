@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:arci_ombriano/Event/info_page.dart';
 import 'package:arci_ombriano/Admin/mod_event.dart';
 import 'package:arci_ombriano/Utils/event.dart';
@@ -12,6 +10,7 @@ class EventWidget extends StatefulWidget {
     required this.index,
     required this.event,
     required this.primary,
+    required this.isAdmin,
     required this.modifyEvent,
     required this.deleteEvent,
   });
@@ -21,6 +20,7 @@ class EventWidget extends StatefulWidget {
   final Color primary;
   final Function(int, Event) modifyEvent;
   final Function(Event) deleteEvent;
+  final bool isAdmin;
 
   @override
   State<EventWidget> createState() => _EventWidgetState();
@@ -76,8 +76,7 @@ class _EventWidgetState extends State<EventWidget> {
                 ),
                 Expanded(child: SizedBox()),
 
-                //TODO: logica utente / admin del pulsante
-                _editButton(),
+                widget.isAdmin ? _editButton() : SizedBox(),
               ],
             ),
 
@@ -168,7 +167,6 @@ class _EventWidgetState extends State<EventWidget> {
               MaterialPageRoute(builder: (_) => ModEvent(event: widget.event)),
             )
             .then((result) {
-              print(result);
               if (result != null) {
                 if (!result['delete'] && result['event'] != null) {
                   widget.modifyEvent(widget.index, result['event']);

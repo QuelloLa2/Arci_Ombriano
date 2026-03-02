@@ -1,17 +1,17 @@
-import 'package:arci_ombriano/Account/signin.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'package:arci_ombriano/Account/signup.dart';
-import 'package:arci_ombriano/Calendar/calendar_page.dart';
-import 'package:arci_ombriano/Event/event_page.dart';
-import 'package:arci_ombriano/Utils/event.dart';
-import 'package:arci_ombriano/Appbar/appbar.dart';
-import 'package:arci_ombriano/Utils/menu_button.dart';
 import 'package:arci_ombriano/app_theme.dart';
+import 'package:arci_ombriano/Appbar/appbar.dart';
+import 'package:arci_ombriano/Calendar/calendar_page.dart';
+import 'package:arci_ombriano/Account/signin.dart';
+import 'package:arci_ombriano/Event/event_page.dart';
+import 'package:arci_ombriano/Admin/setting_page.dart';
+import 'package:arci_ombriano/Utils/event.dart';
+import 'package:arci_ombriano/Utils/menu_button.dart';
 import 'package:arci_ombriano/Utils/example_things.dart';
-import 'Utils/user.dart';
+import 'package:arci_ombriano/Utils/user.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -54,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   late List<Event> events;
 
-  List<String> titleText = ["Calendario", "Eventi", "Account"];
+  List<String> titleText = ["Calendario", "Eventi", "Account", "Setting"];
 
   int _activepage = 1;
 
@@ -70,15 +70,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
     final List<Widget> pages = [
       CalendarPage(listEvents: events),
-      EventPage(listEvents: events, modifyEvent: _editEvent),
-      SigninPage(),
       EventPage(
         listEvents: events,
+        isAdmin: user.isAdmin,
         modifyEvent: _editEvent,
         addEvent: _addEvent,
         deleteEvent: _deleteEvent,
       ),
-      AccountPage(),
+      SigninPage(),
+      SettingPage(),
     ];
 
     return Scaffold(
@@ -110,6 +110,8 @@ class _MyHomePageState extends State<MyHomePage> {
         _item(Icons.calendar_month, "Calendario"),
         _item(Icons.event_note, "Eventi"),
         _item(Icons.account_circle_rounded, "Account"),
+        //Only development thing
+        _item(Icons.settings, "Setting"),
       ],
       currentIndex: _activepage,
       onTap: _onItemTapped,

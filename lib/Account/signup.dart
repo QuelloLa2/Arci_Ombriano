@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:arci_ombriano/Account/widgets.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});

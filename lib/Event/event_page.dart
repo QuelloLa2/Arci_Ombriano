@@ -9,6 +9,7 @@ class EventPage extends StatefulWidget {
   const EventPage({
     super.key,
     required this.listEvents,
+    required this.isAdmin,
     required this.modifyEvent,
     required this.addEvent,
     required this.deleteEvent,
@@ -18,6 +19,7 @@ class EventPage extends StatefulWidget {
   final Function(int, Event) modifyEvent;
   final Function(Event) addEvent;
   final Function(Event) deleteEvent;
+  final bool isAdmin;
 
   @override
   State<EventPage> createState() => _EventPageState();
@@ -44,6 +46,7 @@ class _EventPageState extends State<EventPage> {
                     primary: mainColor,
                     modifyEvent: widget.modifyEvent,
                     deleteEvent: widget.deleteEvent,
+                    isAdmin: widget.isAdmin,
                   ),
                 ],
               );
