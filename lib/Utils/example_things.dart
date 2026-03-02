@@ -50,4 +50,11 @@ List<Event> exampleEvents = [
   ),
 ];
 
-List<User> exampleUsers = [];
+User user = User(
+  name: "user",
+  surname: "user",
+  isAdmin: false,
+  eMail: "nonlaso@quellola.com",
+);
+
+List<String> volunteersWork = [];

@@ -1,3 +1,7 @@
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
 import 'package:arci_ombriano/Account/signup.dart';
 import 'package:arci_ombriano/Calendar/calendar_page.dart';
 import 'package:arci_ombriano/Event/event_page.dart';
@@ -5,10 +9,8 @@ import 'package:arci_ombriano/Utils/event.dart';
 import 'package:arci_ombriano/Appbar/appbar.dart';
 import 'package:arci_ombriano/Utils/menu_button.dart';
 import 'package:arci_ombriano/app_theme.dart';
-import 'package:intl/date_symbol_data_local.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:arci_ombriano/Utils/example_things.dart';
+import 'Utils/user.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,6 +49,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  User exampleUser = user;
+
   late List<Event> events;
 
   List<String> titleText = ["Calendario", "Eventi", "Account"];
@@ -77,7 +81,9 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: TopBar(titlePage: titleText[_activepage]),
       body: Stack(children: [pages.elementAt(_activepage)]),
-      floatingActionButton: AddEventButton(addEvent: _addEvent),
+      floatingActionButton: exampleUser.isAdmin
+          ? AddEventButton(addEvent: _addEvent)
+          : null,
       bottomNavigationBar: _bottomBar(),
     );
   }
