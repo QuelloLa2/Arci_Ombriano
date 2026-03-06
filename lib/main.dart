@@ -84,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: TopBar(titlePage: titleText[_activepage]),
       body: Stack(children: [pages.elementAt(_activepage)]),
-      floatingActionButton: exampleUser.isAdmin
+      floatingActionButton: exampleUser.isAdmin && _activepage != 2
           ? AddEventButton(addEvent: _addEvent)
           : null,
       bottomNavigationBar: _bottomBar(),

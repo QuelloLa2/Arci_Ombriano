@@ -1,4 +1,6 @@
-import 'package:arci_ombriano/Utils/example_things.dart';
+import 'package:arci_ombriano/Admin/mod_widget/input_widget.dart';
+import 'package:arci_ombriano/Admin/mod_widget/button_widget.dart';
+import 'package:arci_ombriano/Admin/mod_widget/selector_widget.dart';
 import 'package:arci_ombriano/Utils/event.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -21,6 +23,8 @@ class _ModEventState extends State<ModEvent> {
   DateFormat stdTime = DateFormat('HH:mm');
   DateFormat stdDateTime = DateFormat('dd-MM-yyyy HH:mm');
 
+  List<String> selectedRoles = [];
+
   @override
   void initState() {
     super.initState();
@@ -40,12 +44,20 @@ class _ModEventState extends State<ModEvent> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: _appBar(), body: _body());
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: _appBar(),
+      body: _body(),
+      bottomNavigationBar: _bottom(),
+    );
   }
 
   @override
   void dispose() {
     _titleController.dispose();
+    _descController.dispose();
+    _dateController.dispose();
+    _timeController.dispose();
     super.dispose();
   }
 
@@ -56,7 +68,11 @@ class _ModEventState extends State<ModEvent> {
         onPressed: () {
           Navigator.pop(context);
         },
-        icon: Icon(Icons.keyboard_arrow_left_rounded, size: 32),
+        icon: Icon(
+          Icons.keyboard_arrow_left_rounded,
+          size: 32,
+          color: Colors.white,
+        ),
       ),
       title: Text(
         "Creazione Evento",
@@ -68,199 +84,105 @@ class _ModEventState extends State<ModEvent> {
   Widget _body() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: Column(
-        children: [
-          _inputField("Titolo", _titleController),
-          SizedBox(height: 25),
-          _descField("Descrizione", _descController),
-          SizedBox(height: 25),
-          Row(
-            spacing: 20,
-            children: [
-              Expanded(child: _dateField("Data", _dateController)),
-              Expanded(child: _timeField("Ora", _timeController)),
-            ],
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            inputField("Titolo", _titleController),
+            SizedBox(height: 25),
+            descField("Descrizione", _descController),
+            SizedBox(height: 25),
+            Row(
+              spacing: 20,
+              children: [
+                Expanded(
+                  child: dateField(
+                    "Data",
+                    _dateController,
+                    stdDate,
+                    context,
+                    widget.event,
+                  ),
+                ),
+                Expanded(
+                  child: timeField(
+                    "Ora",
+                    _timeController,
+                    stdTime,
+                    context,
+                    widget.event,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 25),
+            RoleSelector(
+              selectedRoles: (roles) => {
+                setState(() {
+                  selectedRoles = roles;
+                }),
+              },
+            ),
+            SizedBox(height: 25),
+            SizedBox(
+              child: SingleChildScrollView(
+                child: Center(
+                  child: Column(
+                    children: [
+                      ...selectedRoles.map((role) => _selectedRoles(role)),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _selectedRoles(String role) {
+    return Column(
+      children: [
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadiusGeometry.all(Radius.circular(10)),
+            ),
           ),
-          Expanded(child: SizedBox()),
-          Row(spacing: 7, children: [_deleteButton(), _confermButton()]),
+          onPressed: () {
+            setState(() {
+              selectedRoles.remove(role);
+            });
+          },
+          child: SizedBox(
+            child: Text(role, style: TextStyle(color: Colors.white)),
+          ),
+        ),
+        SizedBox(height: 10),
+      ],
+    );
+  }
+
+  Widget _bottom() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        spacing: 7,
+        children: [
+          deleteButton(context, widget.event),
+          confermButton(
+            context,
+            widget.event,
+            _titleController,
+            _descController,
+            _dateController,
+            _timeController,
+            stdDate,
+            stdTime,
+          ),
         ],
       ),
-    );
-  }
-
-  //Title Field
-
-  Widget _inputField(String label, TextEditingController controller) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-          gapPadding: 7.5,
-        ),
-        labelText: label,
-      ),
-    );
-  }
-
-  //Description Field
-
-  Widget _descField(String label, TextEditingController controller) {
-    return TextField(
-      keyboardType: TextInputType.multiline,
-      maxLines: 10,
-      maxLength: null,
-      controller: controller,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-          gapPadding: 7.5,
-        ),
-        labelText: label,
-      ),
-    );
-  }
-
-  // Date Field
-  Widget _dateField(String label, TextEditingController controller) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        labelText: label,
-      ),
-      readOnly: true,
-      onTap: () async {
-        DateTime? pickDate = await showDatePicker(
-          context: context,
-          locale: const Locale('it', 'IT'),
-          initialDate: widget.event?.dateEvent ?? DateTime.now(),
-          firstDate: DateTime(2026, 1, 1),
-          lastDate: DateTime(2030, 12, 31),
-        );
-
-        if (pickDate != null) {
-          setState(() {
-            controller.text = stdDate.format(pickDate);
-          });
-        }
-      },
-    );
-  }
-
-  // Time Field
-  Widget _timeField(String label, TextEditingController controller) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        labelText: label,
-      ),
-      readOnly: true,
-      onTap: () async {
-        Event? event = widget.event;
-        TimeOfDay? time;
-
-        if (event != null) {
-          time = TimeOfDay(
-            hour: event.timeEvent.hour,
-            minute: event.timeEvent.minute,
-          );
-        }
-        TimeOfDay? pickDate = await showTimePicker(
-          context: context,
-          initialTime: time ?? TimeOfDay.now(),
-        );
-
-        if (pickDate != null) {
-          setState(() {
-            DateTime time = DateTime(0, 0, 0, pickDate.hour, pickDate.minute);
-            controller.text = stdTime.format(time);
-          });
-        }
-      },
-    );
-  }
-
-  Widget _deleteButton() {
-    Color backColor = Theme.of(context).colorScheme.primary;
-
-    return SizedBox(
-      height: 60,
-      child: ElevatedButton(
-        onPressed: () {
-          Navigator.pop(context, {'delete': true, 'event': widget.event});
-        },
-        style: ElevatedButton.styleFrom(
-          shape: CircleBorder(),
-          backgroundColor: backColor,
-          foregroundColor: Colors.white,
-        ),
-        child: Icon(Icons.delete, size: 26),
-      ),
-    );
-  }
-
-  Widget _confermButton() {
-    Color backColor = Theme.of(context).colorScheme.primary;
-
-    return Expanded(
-      child: SizedBox(
-        height: 60,
-        child: ElevatedButton(
-          onPressed: () {
-            Event? event = widget.event;
-
-            DateTime newDateTime = _formatDate(
-              _dateController.text,
-              _timeController.text,
-            );
-
-            if (event != null) {
-              Event updateEvent = event.copyWith(
-                nameEvent: _titleController.text,
-                description: _descController.text,
-                timeEvent: newDateTime,
-              );
-              Navigator.pop(context, {'delete': false, 'event': updateEvent});
-            }
-            if (event == null) {
-              exampleId++;
-
-              Event newEvent = Event(
-                id: exampleId,
-                nameEvent: _titleController.text,
-                description: _descController.text,
-                timeEvent: newDateTime,
-                mapVolunteers: {
-                  'Cuoco': {'Current': 2, 'Max': 2},
-                  'Audio': {'Current': 2, 'Max': 3},
-                  'Cameriere': {'Current': 1, 'Max': 4},
-                },
-              );
-              Navigator.pop(context, {'event': newEvent});
-            }
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: backColor,
-            foregroundColor: Colors.white,
-          ),
-          child: Text("Conferma", style: TextStyle(fontSize: 20)),
-        ),
-      ),
-    );
-  }
-
-  DateTime _formatDate(String date, String time) {
-    DateTime pickedDate = stdDate.parse(date);
-    DateTime pickedTime = stdTime.parse(time);
-
-    return DateTime(
-      pickedDate.year,
-      pickedDate.month,
-      pickedDate.day,
-      pickedTime.hour,
-      pickedTime.minute,
     );
   }
 }

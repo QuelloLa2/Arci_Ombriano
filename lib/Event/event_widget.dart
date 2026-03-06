@@ -77,6 +77,7 @@ class _EventWidgetState extends State<EventWidget> {
                 Expanded(child: SizedBox()),
 
                 widget.isAdmin ? _editButton() : SizedBox(),
+                SizedBox(width: 10),
               ],
             ),
 
@@ -156,8 +157,8 @@ class _EventWidgetState extends State<EventWidget> {
   Widget _editButton() {
     Color mainColor = Theme.of(context).colorScheme.primary;
 
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
+    return IconButton(
+      style: IconButton.styleFrom(
         backgroundColor: mainColor,
         shape: CircleBorder(),
       ),
@@ -177,7 +178,7 @@ class _EventWidgetState extends State<EventWidget> {
               }
             });
       },
-      child: Icon(Icons.mode_edit_outline_rounded, color: Colors.white),
+      icon: Icon(Icons.mode_edit_outline_rounded, color: Colors.white),
     );
   }
 }

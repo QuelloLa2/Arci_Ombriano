@@ -25,4 +25,8 @@ final appTheme = ThemeData(
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(backgroundColor: Color(0xFFC74E43)),
   ),
+
+  iconButtonTheme: IconButtonThemeData(
+    style: IconButton.styleFrom(backgroundColor: Color(0xFFC74E43)),
+  ),
 );

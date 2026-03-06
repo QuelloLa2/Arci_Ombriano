@@ -21,7 +21,7 @@ class _AddEventButtonState extends State<AddEventButton> {
           context,
           rootNavigator: true,
         ).push(MaterialPageRoute(builder: (_) => ModEvent())).then((result) {
-          if (result == null && result['event'] == null) {
+          if (result != null && result['event'] != null) {
             widget.addEvent(result['event']);
           }
         });

@@ -29,30 +29,42 @@ class _EventPageState extends State<EventPage> {
   @override
   Widget build(BuildContext context) {
     Color mainColor = Theme.of(context).colorScheme.primary;
+
     return Column(
       children: [
         _titleEvent(mainColor),
-        Expanded(
-          child: ListView.builder(
-            itemCount: widget.listEvents.length,
-            itemBuilder: (context, index) {
-              final event = widget.listEvents[index];
-              return Column(
+
+        widget.listEvents.isEmpty
+            ? Column(
                 children: [
-                  _isSameDate(index),
-                  EventWidget(
-                    event: event,
-                    index: index,
-                    primary: mainColor,
-                    modifyEvent: widget.modifyEvent,
-                    deleteEvent: widget.deleteEvent,
-                    isAdmin: widget.isAdmin,
+                  SizedBox(height: 20),
+                  Text(
+                    "Non ci sono eventi",
+                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.w500),
                   ),
                 ],
-              );
-            },
-          ),
-        ),
+              )
+            : Expanded(
+                child: ListView.builder(
+                  itemCount: widget.listEvents.length,
+                  itemBuilder: (context, index) {
+                    final event = widget.listEvents[index];
+                    return Column(
+                      children: [
+                        _isSameDate(index),
+                        EventWidget(
+                          event: event,
+                          index: index,
+                          primary: mainColor,
+                          modifyEvent: widget.modifyEvent,
+                          deleteEvent: widget.deleteEvent,
+                          isAdmin: widget.isAdmin,
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
       ],
     );
   }
@@ -98,7 +110,6 @@ class _EventPageState extends State<EventPage> {
   }
 
   // Controll Same Day/Month
-
   Widget _isSameDate(int index) {
     Color dateColor = Color(0xFF1A0704);
 

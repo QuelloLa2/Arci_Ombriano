@@ -39,7 +39,11 @@ class _InformationPageState extends State<InformationPage> {
         onPressed: () {
           Navigator.pop(context);
         },
-        icon: Icon(Icons.keyboard_arrow_left_rounded, size: 28),
+        icon: Icon(
+          Icons.keyboard_arrow_left_rounded,
+          size: 28,
+          color: Colors.white,
+        ),
       ),
       title: Text(
         widget.titleEvent,
