@@ -11,7 +11,6 @@ import 'package:arci_ombriano/Admin/setting_page.dart';
 import 'package:arci_ombriano/Utils/event.dart';
 import 'package:arci_ombriano/Utils/menu_button.dart';
 import 'package:arci_ombriano/Utils/example_things.dart';
-import 'package:arci_ombriano/Utils/user.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,8 +49,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  User exampleUser = user;
-
   late List<Event> events;
 
   List<String> titleText = ["Calendario", "Eventi", "Account", "Setting"];
@@ -84,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: TopBar(titlePage: titleText[_activepage]),
       body: Stack(children: [pages.elementAt(_activepage)]),
-      floatingActionButton: exampleUser.isAdmin && _activepage != 2
+      floatingActionButton: user.isAdmin && _activepage != 2
           ? AddEventButton(addEvent: _addEvent)
           : null,
       bottomNavigationBar: _bottomBar(),

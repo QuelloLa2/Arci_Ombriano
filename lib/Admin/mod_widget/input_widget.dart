@@ -8,6 +8,7 @@ Widget inputField(String label, TextEditingController controller) {
     inputFormatters: [LengthLimitingTextInputFormatter(36)],
     controller: controller,
     decoration: InputDecoration(
+      floatingLabelBehavior: FloatingLabelBehavior.always,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(10)),
         gapPadding: 7.5,
@@ -24,6 +25,7 @@ Widget descField(String label, TextEditingController controller) {
     maxLength: null,
     controller: controller,
     decoration: InputDecoration(
+      floatingLabelBehavior: FloatingLabelBehavior.always,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(10)),
         gapPadding: 7.5,

@@ -29,6 +29,7 @@ Widget confermButton(
   TextEditingController descController,
   TextEditingController dateController,
   TextEditingController timeController,
+  Map<String, TextEditingController> mapSelVolunteers,
   DateFormat stdDate,
   DateFormat stdTime,
 ) {
@@ -51,6 +52,14 @@ Widget confermButton(
               nameEvent: titleController.text,
               description: descController.text,
               timeEvent: newDateTime,
+              mapVolunteers: Map.fromEntries(
+                mapSelVolunteers.entries.map(
+                  (role) => MapEntry(role.key, {
+                    'Current': 0,
+                    'Max': int.parse(role.value.text),
+                  }),
+                ),
+              ),
             );
             Navigator.pop(context, {'delete': false, 'event': updateEvent});
           }
@@ -62,11 +71,14 @@ Widget confermButton(
               nameEvent: titleController.text,
               description: descController.text,
               timeEvent: newDateTime,
-              mapVolunteers: {
-                'Cuoco': {'Current': 2, 'Max': 2},
-                'Audio': {'Current': 2, 'Max': 3},
-                'Cameriere': {'Current': 1, 'Max': 4},
-              },
+              mapVolunteers: Map.fromEntries(
+                mapSelVolunteers.entries.map(
+                  (role) => MapEntry(role.key, {
+                    'Current': 0,
+                    'Max': int.parse(role.value.text),
+                  }),
+                ),
+              ),
             );
             Navigator.pop(context, {'event': newEvent});
           }

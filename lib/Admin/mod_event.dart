@@ -3,6 +3,7 @@ import 'package:arci_ombriano/Admin/mod_widget/button_widget.dart';
 import 'package:arci_ombriano/Admin/mod_widget/selector_widget.dart';
 import 'package:arci_ombriano/Utils/event.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class ModEvent extends StatefulWidget {
@@ -23,7 +24,7 @@ class _ModEventState extends State<ModEvent> {
   DateFormat stdTime = DateFormat('HH:mm');
   DateFormat stdDateTime = DateFormat('dd-MM-yyyy HH:mm');
 
-  List<String> selectedRoles = [];
+  Map<String, TextEditingController> selectedRoles = {};
 
   @override
   void initState() {
@@ -40,6 +41,19 @@ class _ModEventState extends State<ModEvent> {
     _timeController = TextEditingController(
       text: stdTime.format(widget.event?.timeEvent ?? DateTime.now()),
     );
+
+    Map<String, Map<String, int>>? volunteers = widget.event?.mapVolunteers;
+
+    if (volunteers != null) {
+      selectedRoles = Map.fromEntries(
+        volunteers.entries.map(
+          (role) => MapEntry(
+            role.key,
+            TextEditingController(text: role.value.values.last.toString()),
+          ),
+        ),
+      );
+    }
   }
 
   @override
@@ -117,11 +131,12 @@ class _ModEventState extends State<ModEvent> {
             ),
             SizedBox(height: 25),
             RoleSelector(
-              selectedRoles: (roles) => {
+              selectedRoles: (roles) {
                 setState(() {
                   selectedRoles = roles;
-                }),
+                });
               },
+              selectionRoles: selectedRoles,
             ),
             SizedBox(height: 25),
             SizedBox(
@@ -129,7 +144,9 @@ class _ModEventState extends State<ModEvent> {
                 child: Center(
                   child: Column(
                     children: [
-                      ...selectedRoles.map((role) => _selectedRoles(role)),
+                      ...selectedRoles.entries.map(
+                        (entry) => _selectedRoles(entry.key, entry.value),
+                      ),
                     ],
                   ),
                 ),
@@ -141,22 +158,50 @@ class _ModEventState extends State<ModEvent> {
     );
   }
 
-  Widget _selectedRoles(String role) {
+  Widget _selectedRoles(String role, TextEditingController controller) {
     return Column(
       children: [
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadiusGeometry.all(Radius.circular(10)),
+        Card(
+          margin: EdgeInsets.all(1),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                SizedBox(width: 7.5),
+                Icon(Icons.person, color: Colors.black),
+                SizedBox(width: 10),
+                Text(role, style: TextStyle(fontSize: 16)),
+                Expanded(child: SizedBox()),
+                SizedBox(
+                  width: 30,
+                  child: TextField(
+                    controller: controller,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    keyboardType: TextInputType.number,
+                    maxLength: 2,
+                    decoration: InputDecoration(
+                      counterText: "",
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 4,
+                        vertical: 4,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 12.5),
+                IconButton(
+                  style: IconButton.styleFrom(),
+                  onPressed: () {
+                    setState(() {
+                      setState(() {
+                        selectedRoles.remove(role);
+                      });
+                    });
+                  },
+                  icon: Icon(Icons.person_remove),
+                ),
+              ],
             ),
-          ),
-          onPressed: () {
-            setState(() {
-              selectedRoles.remove(role);
-            });
-          },
-          child: SizedBox(
-            child: Text(role, style: TextStyle(color: Colors.white)),
           ),
         ),
         SizedBox(height: 10),
@@ -178,6 +223,7 @@ class _ModEventState extends State<ModEvent> {
             _descController,
             _dateController,
             _timeController,
+            selectedRoles,
             stdDate,
             stdTime,
           ),
