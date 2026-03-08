@@ -9,10 +9,23 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
+  late TextEditingController roleController;
+
+  @override
+  void initState() {
+    super.initState();
+    roleController = TextEditingController();
+    volunteersWork.sort((a, b) => a.compareTo(b));
+  }
+
+  @override
+  void dispose() {
+    roleController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    volunteersWork.sort((a, b) => a.compareTo(b));
-
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -61,8 +74,6 @@ class _SettingPageState extends State<SettingPage> {
   }
 
   Widget _addRole() {
-    final TextEditingController roleController = TextEditingController();
-
     return ListTile(
       leading: Icon(Icons.person_add),
       title: TextField(

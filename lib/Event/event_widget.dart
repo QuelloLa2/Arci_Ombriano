@@ -90,14 +90,11 @@ class _EventWidgetState extends State<EventWidget> {
             ),
 
             //Volunteers
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                spacing: 5,
-                children: event.mapVolunteers.keys
-                    .map((work) => textVolunteer(work))
-                    .toList(),
-              ),
+            Wrap(
+              spacing: 5,
+              children: event.mapVolunteers.keys
+                  .map((work) => textVolunteer(work))
+                  .toList(),
             ),
 
             // Time
@@ -165,7 +162,10 @@ class _EventWidgetState extends State<EventWidget> {
       onPressed: () {
         Navigator.of(context, rootNavigator: true)
             .push(
-              MaterialPageRoute(builder: (_) => ModEvent(event: widget.event)),
+              MaterialPageRoute(
+                builder: (_) =>
+                    ModEvent(event: widget.event, pageName: "Modifica Evento"),
+              ),
             )
             .then((result) {
               if (result != null) {

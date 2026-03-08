@@ -139,11 +139,8 @@ class _InformationPageState extends State<InformationPage> {
                   SizedBox(width: 10),
                 ],
               ),
-              Column(
-                children: [
-                  Text("Persona 1"),
-                  Text("Persona 2"),
-                  Text("Persona 3"),
+              Column(children: [
+                
                 ],
               ),
             ],

@@ -17,14 +17,17 @@ class _AddEventButtonState extends State<AddEventButton> {
     return FloatingActionButton(
       shape: CircleBorder(),
       onPressed: () {
-        Navigator.of(
-          context,
-          rootNavigator: true,
-        ).push(MaterialPageRoute(builder: (_) => ModEvent())).then((result) {
-          if (result != null && result['event'] != null) {
-            widget.addEvent(result['event']);
-          }
-        });
+        Navigator.of(context, rootNavigator: true)
+            .push(
+              MaterialPageRoute(
+                builder: (_) => ModEvent(pageName: "Crea Evento"),
+              ),
+            )
+            .then((result) {
+              if (result != null && result['event'] != null) {
+                widget.addEvent(result['event']);
+              }
+            });
       },
       child: Icon(Icons.add, color: Colors.white),
     );

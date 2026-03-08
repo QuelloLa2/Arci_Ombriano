@@ -7,9 +7,10 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class ModEvent extends StatefulWidget {
-  const ModEvent({super.key, this.event});
+  const ModEvent({super.key, this.event, required this.pageName});
 
   final Event? event;
+  final String pageName;
   @override
   State<ModEvent> createState() => _ModEventState();
 }
@@ -59,7 +60,7 @@ class _ModEventState extends State<ModEvent> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       appBar: _appBar(),
       body: _body(),
       bottomNavigationBar: _bottom(),
@@ -89,7 +90,7 @@ class _ModEventState extends State<ModEvent> {
         ),
       ),
       title: Text(
-        "Creazione Evento",
+        widget.pageName,
         style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
       ),
     );
@@ -193,11 +194,10 @@ class _ModEventState extends State<ModEvent> {
                   style: IconButton.styleFrom(),
                   onPressed: () {
                     setState(() {
-                      setState(() {
-                        selectedRoles.remove(role);
-                      });
+                      selectedRoles.remove(role);
                     });
                   },
+
                   icon: Icon(Icons.person_remove),
                 ),
               ],
