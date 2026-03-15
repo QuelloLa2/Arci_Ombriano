@@ -27,7 +27,7 @@ class EventWidget extends StatefulWidget {
 }
 
 class _EventWidgetState extends State<EventWidget> {
-  late Map<String, bool> mapIsSelected = {};
+  Map<String, bool> mapIsSelected = {};
 
   @override
   void initState() {
@@ -35,6 +35,15 @@ class _EventWidgetState extends State<EventWidget> {
       for (final key in widget.event.mapVolunteers.keys) key: false,
     };
     super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant EventWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    for (final key in widget.event.mapVolunteers.keys) {
+      mapIsSelected.putIfAbsent(key, () => false);
+    }
   }
 
   @override
@@ -74,10 +83,10 @@ class _EventWidgetState extends State<EventWidget> {
                   event.nameEvent,
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
                 ),
-                Expanded(child: SizedBox()),
+                const Expanded(child: SizedBox()),
 
                 widget.isAdmin ? _editButton() : SizedBox(),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
               ],
             ),
 
@@ -120,6 +129,7 @@ class _EventWidgetState extends State<EventWidget> {
     return TextButton(
       onPressed: () {
         setState(() {
+          print(mapIsSelected);
           if (mapIsSelected[volunteer] == true) {
             mapIsSelected.updateAll((work, _) => false);
           } else {
@@ -141,7 +151,7 @@ class _EventWidgetState extends State<EventWidget> {
                   size: 24,
                   color: Colors.black,
                 ),
-          SizedBox(width: 3),
+          const SizedBox(width: 3),
           Text(
             volunteer,
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),

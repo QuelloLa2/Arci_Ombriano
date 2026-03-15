@@ -16,7 +16,8 @@ dependencies:
   cupertino_icons: ^1.0.8
   table_calendar: ^3.2.0
   intl: ^0.20.2
-  multiselect_field: ^1.7.0
+  multiselect_field: ^2.0.0
+  http: ^1.6.0
 
 dev_dependencies:
   flutter_test:

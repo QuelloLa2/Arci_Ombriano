@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:arci_ombriano/Utils/event.dart';
 import 'package:arci_ombriano/Utils/example_things.dart';
 import 'package:intl/intl.dart';
+import 'package:arci_ombriano/API/add_event.dart';
 
 Widget deleteButton(BuildContext context, Event? event) {
   Color backColor = Theme.of(context).colorScheme.primary;
@@ -80,6 +81,7 @@ Widget confermButton(
                 ),
               ),
             );
+            addEvent(newEvent);
             Navigator.pop(context, {'event': newEvent});
           }
         },

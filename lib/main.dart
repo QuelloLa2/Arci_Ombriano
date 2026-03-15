@@ -58,13 +58,12 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     events = List.from(exampleEvents);
+    events = _sortEvents();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    _sortEvents();
-
     final List<Widget> pages = [
       CalendarPage(listEvents: events),
       EventPage(
@@ -122,13 +121,14 @@ class _MyHomePageState extends State<MyHomePage> {
   void _editEvent(int index, Event updatedEvent) {
     setState(() {
       events[index] = updatedEvent;
+      events = _sortEvents();
     });
   }
 
   void _addEvent(Event newEvent) {
     setState(() {
       events.add(newEvent);
-      _sortEvents();
+      events = _sortEvents();
     });
   }
 
@@ -138,7 +138,23 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void _sortEvents() {
+  List<Event> _sortEvents() {
     events.sort((a, b) => a.timeEvent.compareTo(b.timeEvent));
+
+    List<Event> newestEvents = [];
+    List<Event> oldestEvents = [];
+    DateTime now = DateTime.now();
+
+    for (var event in events) {
+      if (event.dateEvent.isAfter(now)) {
+        newestEvents.add(event);
+      } else {
+        oldestEvents.add(event);
+      }
+    }
+
+    List<Event> orderedEvents = [...newestEvents, ...oldestEvents];
+
+    return orderedEvents;
   }
 }
