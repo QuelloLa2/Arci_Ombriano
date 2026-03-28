@@ -1,7 +1,9 @@
 import 'package:arci_ombriano/Admin/mod_widget/input_widget.dart';
 import 'package:arci_ombriano/Admin/mod_widget/button_widget.dart';
 import 'package:arci_ombriano/Admin/mod_widget/selector_widget.dart';
+import 'package:arci_ombriano/API/roles.dart' as api;
 import 'package:arci_ombriano/Utils/event.dart';
+import 'package:arci_ombriano/Utils/role.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -11,6 +13,7 @@ class ModEvent extends StatefulWidget {
 
   final Event? event;
   final String pageName;
+
   @override
   State<ModEvent> createState() => _ModEventState();
 }
@@ -24,8 +27,9 @@ class _ModEventState extends State<ModEvent> {
   DateFormat stdDate = DateFormat('dd/MM/yyyy');
   DateFormat stdTime = DateFormat('HH:mm');
   DateFormat stdDateTime = DateFormat('dd-MM-yyyy HH:mm');
+  Map<Role, TextEditingController> selectedRoles = {};
 
-  Map<String, TextEditingController> selectedRoles = {};
+  Map<int, String> roleNames = {};
 
   @override
   void initState() {
@@ -43,7 +47,7 @@ class _ModEventState extends State<ModEvent> {
       text: stdTime.format(widget.event?.timeEvent ?? DateTime.now()),
     );
 
-    Map<String, Map<String, int>>? volunteers = widget.event?.mapVolunteers;
+    Map<Role, Map<String, int>>? volunteers = widget.event?.mapVolunteers;
 
     if (volunteers != null) {
       selectedRoles = Map.fromEntries(
@@ -54,7 +58,21 @@ class _ModEventState extends State<ModEvent> {
           ),
         ),
       );
+      for (final role in volunteers.keys) {
+        roleNames[role.id] = role.name;
+      }
     }
+
+    _loadRoleNames();
+  }
+
+  Future<void> _loadRoleNames() async {
+    final roles = await api.getRoles();
+    setState(() {
+      for (final role in roles) {
+        roleNames[role.id] = role.name;
+      }
+    });
   }
 
   @override
@@ -73,6 +91,9 @@ class _ModEventState extends State<ModEvent> {
     _descController.dispose();
     _dateController.dispose();
     _timeController.dispose();
+    for (final controller in selectedRoles.values) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
@@ -80,9 +101,7 @@ class _ModEventState extends State<ModEvent> {
     return AppBar(
       centerTitle: true,
       leading: IconButton(
-        onPressed: () {
-          Navigator.pop(context);
-        },
+        onPressed: () => Navigator.pop(context),
         icon: Icon(
           Icons.keyboard_arrow_left_rounded,
           size: 32,
@@ -140,18 +159,12 @@ class _ModEventState extends State<ModEvent> {
               selectionRoles: selectedRoles,
             ),
             SizedBox(height: 25),
-            SizedBox(
-              child: SingleChildScrollView(
-                child: Center(
-                  child: Column(
-                    children: [
-                      ...selectedRoles.entries.map(
-                        (entry) => _selectedRoles(entry.key, entry.value),
-                      ),
-                    ],
-                  ),
+            Column(
+              children: [
+                ...selectedRoles.entries.map(
+                  (entry) => _selectedRoles(entry.key.id, entry.value),
                 ),
-              ),
+              ],
             ),
           ],
         ),
@@ -159,7 +172,9 @@ class _ModEventState extends State<ModEvent> {
     );
   }
 
-  Widget _selectedRoles(String role, TextEditingController controller) {
+  Widget _selectedRoles(int roleId, TextEditingController controller) {
+    final roleName = roleNames[roleId] ?? roleId.toString();
+
     return Column(
       children: [
         Card(
@@ -171,7 +186,7 @@ class _ModEventState extends State<ModEvent> {
                 SizedBox(width: 7.5),
                 Icon(Icons.person, color: Colors.black),
                 SizedBox(width: 10),
-                Text(role, style: TextStyle(fontSize: 16)),
+                Text(roleName, style: TextStyle(fontSize: 16)),
                 Expanded(child: SizedBox()),
                 SizedBox(
                   width: 30,
@@ -191,14 +206,15 @@ class _ModEventState extends State<ModEvent> {
                 ),
                 SizedBox(width: 12.5),
                 IconButton(
-                  style: IconButton.styleFrom(),
                   onPressed: () {
                     setState(() {
-                      selectedRoles.remove(role);
+                      final roleKey = selectedRoles.keys.firstWhere(
+                        (role) => role.id == roleId,
+                      );
+                      selectedRoles.remove(roleKey);
                     });
                   },
-
-                  icon: Icon(Icons.person_remove),
+                  icon: Icon(Icons.person_remove, color: Colors.white),
                 ),
               ],
             ),

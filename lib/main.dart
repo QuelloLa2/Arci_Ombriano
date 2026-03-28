@@ -7,10 +7,12 @@ import 'package:arci_ombriano/Appbar/appbar.dart';
 import 'package:arci_ombriano/Calendar/calendar_page.dart';
 import 'package:arci_ombriano/Account/signin.dart';
 import 'package:arci_ombriano/Event/event_page.dart';
-import 'package:arci_ombriano/Admin/setting_page.dart';
+import 'package:arci_ombriano/Setting/setting_page.dart';
 import 'package:arci_ombriano/Utils/event.dart';
 import 'package:arci_ombriano/Utils/menu_button.dart';
 import 'package:arci_ombriano/Utils/example_things.dart';
+import 'package:arci_ombriano/API/event.dart' as api;
+import "package:flutter_secure_storage/flutter_secure_storage.dart";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,7 +37,6 @@ class MyApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-
       home: const MyHomePage(),
     );
   }
@@ -49,17 +50,29 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late List<Event> events;
+  final storage = FlutterSecureStorage();
 
-  List<String> titleText = ["Calendario", "Eventi", "Account", "Setting"];
+  List<Event> events = [];
+
+  final List<String> titleText = ["Calendario", "Eventi", "Account", "Setting"];
 
   int _activepage = 1;
 
   @override
   void initState() {
-    events = List.from(exampleEvents);
-    events = _sortEvents();
     super.initState();
+    _loadEvents();
+  }
+
+  Future<void> _loadEvents() async {
+    final (fetchedEvents, success) = await api.getEvent();
+
+    if (success && fetchedEvents != null) {
+      setState(() {
+        events = fetchedEvents;
+        events = _sortEvents();
+      });
+    }
   }
 
   @override
@@ -80,7 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: TopBar(titlePage: titleText[_activepage]),
       body: pages[_activepage],
-      floatingActionButton: user.isAdmin && _activepage != 2
+      floatingActionButton: user.isAdmin && _activepage != 2 && _activepage != 3
           ? AddEventButton(addEvent: _addEvent)
           : null,
       bottomNavigationBar: _bottomBar(),
@@ -96,7 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget _bottomBar() {
     return BottomNavigationBar(
       selectedItemColor: Theme.of(context).colorScheme.primary,
-      unselectedItemColor: Color(0xFF7B8284),
+      unselectedItemColor: const Color(0xFF7B8284),
       showSelectedLabels: true,
       showUnselectedLabels: true,
       iconSize: 24,
@@ -118,10 +131,13 @@ class _MyHomePageState extends State<MyHomePage> {
     return BottomNavigationBarItem(icon: Icon(icon), label: data);
   }
 
-  void _editEvent(int index, Event updatedEvent) {
+  void _editEvent(Event updatedEvent) {
     setState(() {
-      events[index] = updatedEvent;
-      events = _sortEvents();
+      final index = events.indexWhere((e) => e.id == updatedEvent.id);
+      if (index != -1) {
+        events[index] = updatedEvent;
+        events = _sortEvents();
+      }
     });
   }
 
@@ -132,29 +148,20 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void _deleteEvent(Event deteledEvent) {
+  void _deleteEvent(Event deletedEvent) {
     setState(() {
-      events.remove(deteledEvent);
+      events.remove(deletedEvent);
     });
   }
 
   List<Event> _sortEvents() {
-    events.sort((a, b) => a.timeEvent.compareTo(b.timeEvent));
+    final sorted = List<Event>.from(events)
+      ..sort((a, b) => a.timeEvent.compareTo(b.timeEvent));
 
-    List<Event> newestEvents = [];
-    List<Event> oldestEvents = [];
-    DateTime now = DateTime.now();
+    final now = DateTime.now();
+    final upcoming = sorted.where((e) => e.dateEvent.isAfter(now)).toList();
+    final past = sorted.where((e) => !e.dateEvent.isAfter(now)).toList();
 
-    for (var event in events) {
-      if (event.dateEvent.isAfter(now)) {
-        newestEvents.add(event);
-      } else {
-        oldestEvents.add(event);
-      }
-    }
-
-    List<Event> orderedEvents = [...newestEvents, ...oldestEvents];
-
-    return orderedEvents;
+    return [...upcoming, ...past];
   }
 }

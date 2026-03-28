@@ -18,7 +18,7 @@ class EventWidget extends StatefulWidget {
   final int index;
   final Event event;
   final Color primary;
-  final Function(int, Event) modifyEvent;
+  final Function(Event) modifyEvent;
   final Function(Event) deleteEvent;
   final bool isAdmin;
 
@@ -32,7 +32,7 @@ class _EventWidgetState extends State<EventWidget> {
   @override
   void initState() {
     mapIsSelected = {
-      for (final key in widget.event.mapVolunteers.keys) key: false,
+      for (final key in widget.event.mapVolunteers.keys) key.name: false,
     };
     super.initState();
   }
@@ -42,7 +42,7 @@ class _EventWidgetState extends State<EventWidget> {
     super.didUpdateWidget(oldWidget);
 
     for (final key in widget.event.mapVolunteers.keys) {
-      mapIsSelected.putIfAbsent(key, () => false);
+      mapIsSelected.putIfAbsent(key.name, () => false);
     }
   }
 
@@ -102,7 +102,7 @@ class _EventWidgetState extends State<EventWidget> {
             Wrap(
               spacing: 5,
               children: event.mapVolunteers.keys
-                  .map((work) => textVolunteer(work))
+                  .map((work) => textVolunteer(work.name))
                   .toList(),
             ),
 
@@ -129,7 +129,6 @@ class _EventWidgetState extends State<EventWidget> {
     return TextButton(
       onPressed: () {
         setState(() {
-          print(mapIsSelected);
           if (mapIsSelected[volunteer] == true) {
             mapIsSelected.updateAll((work, _) => false);
           } else {
@@ -180,7 +179,7 @@ class _EventWidgetState extends State<EventWidget> {
             .then((result) {
               if (result != null) {
                 if (!result['delete'] && result['event'] != null) {
-                  widget.modifyEvent(widget.index, result['event']);
+                  widget.modifyEvent(result['event']);
                 }
                 if (result['delete'] && result['event'] != null) {
                   widget.deleteEvent(result['event']);

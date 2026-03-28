@@ -2,6 +2,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:arci_ombriano/Utils/event.dart';
 import 'package:arci_ombriano/Event/event_widget.dart';
+import 'package:arci_ombriano/Event/info_page.dart';
 
 class EventPage extends StatefulWidget {
   const EventPage({
@@ -16,7 +17,7 @@ class EventPage extends StatefulWidget {
   final List<Event> listEvents;
   final bool isAdmin;
 
-  final Function(int, Event) modifyEvent;
+  final Function(Event) modifyEvent;
   final Function(Event) addEvent;
   final Function(Event) deleteEvent;
 
@@ -28,35 +29,29 @@ class _EventPageState extends State<EventPage> {
   @override
   Widget build(BuildContext context) {
     List<List<Event>> sortedList = _sortEvents(widget.listEvents);
-    return Column(
-      children: [
-        _titleEvent(Theme.of(context).colorScheme.primary, "Eventi prossimi"),
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          _titleEvent(Theme.of(context).colorScheme.primary, "Eventi prossimi"),
 
-        sortedList[0].isEmpty
-            ? Column(
-                children: [
-                  SizedBox(height: 20),
-                  Text(
-                    "Non ci sono eventi",
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.w500),
-                  ),
-                ],
-              )
-            : _eventListTiles(sortedList[0]),
-
-        _titleEvent(Theme.of(context).colorScheme.primary, "Eventi Passati"),
-        sortedList[1].isEmpty
-            ? Column(
-                children: [
-                  SizedBox(height: 20),
-                  Text(
-                    "Non ci sono eventi",
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.w500),
-                  ),
-                ],
-              )
-            : _eventListTiles(sortedList[1]),
-      ],
+          sortedList[0].isEmpty
+              ? Column(
+                  children: [
+                    SizedBox(height: 20),
+                    Text(
+                      "Non ci sono eventi",
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                  ],
+                )
+              : Column(children: [_eventListTiles(sortedList[0])]),
+          sortedList[1].isEmpty ? SizedBox() : _pastEventCard(sortedList[1]),
+        ],
+      ),
     );
   }
 
@@ -101,27 +96,27 @@ class _EventPageState extends State<EventPage> {
   }
 
   Widget _eventListTiles(List<Event> eventlist) {
-    return Expanded(
-      child: ListView.builder(
-        itemCount: eventlist.length,
-        itemBuilder: (context, index) {
-          final event = eventlist[index];
-          return Column(
-            children: [
-              _isSameDate(index, eventlist),
-              EventWidget(
-                key: ValueKey(event.id),
-                event: event,
-                index: index,
-                primary: Theme.of(context).colorScheme.primary,
-                modifyEvent: widget.modifyEvent,
-                deleteEvent: widget.deleteEvent,
-                isAdmin: widget.isAdmin,
-              ),
-            ],
-          );
-        },
-      ),
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: eventlist.length,
+      itemBuilder: (context, index) {
+        final event = eventlist[index];
+        return Column(
+          children: [
+            _isSameDate(index, eventlist),
+            EventWidget(
+              key: ValueKey(event.id),
+              event: event,
+              index: index,
+              primary: Theme.of(context).colorScheme.primary,
+              modifyEvent: widget.modifyEvent,
+              deleteEvent: widget.deleteEvent,
+              isAdmin: widget.isAdmin,
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -142,8 +137,93 @@ class _EventPageState extends State<EventPage> {
     return const SizedBox(height: 7.5);
   }
 
+  Widget _pastEventCard(List<Event> listEvents) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Card(
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+          side: BorderSide(color: Colors.white, width: 0),
+        ),
+        child: ExpansionTile(
+          collapsedIconColor: Colors.black,
+          iconColor: Colors.black,
+          tilePadding: EdgeInsets.symmetric(horizontal: 6),
+          shape: LinearBorder.none,
+          collapsedShape: LinearBorder.none,
+          title: Text(
+            "Eventi Passati",
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.primary,
+              fontWeight: FontWeight.w700,
+              fontSize: 28,
+            ),
+          ),
+          children: [
+            ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: listEvents.length,
+              itemBuilder: (context, index) {
+                final event = listEvents[index];
+                return Card(
+                  margin: EdgeInsets.all(8),
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(
+                      width: 1.7,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: ListTile(
+                    //Name Event
+                    leading: Text(
+                      event.nameEvent,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    //Date Event
+                    title: Text(
+                      "- ${DateFormat("dd/MM/yyyy").format(event.timeEvent)}",
+                      style: TextStyle(
+                        fontSize: 16,
+                        letterSpacing: -0.5,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    // Icona
+                    trailing: Icon(
+                      Icons.keyboard_arrow_right_rounded,
+                      size: 32,
+                    ),
+                    onTap: () {
+                      Navigator.of(context, rootNavigator: true).push(
+                        MaterialPageRoute(
+                          builder: (_) => InformationPage(
+                            titleEvent: event.nameEvent,
+                            descEvent: event.description,
+                            mapVolunteers: event.mapVolunteers,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   // Sort and Divide eventlist in Newest e Oldest
   List<List<Event>> _sortEvents(List<Event> events) {
+    events.sort((a, b) => a.timeEvent.compareTo(b.timeEvent));
+
     List<Event> newestEvents = [];
     List<Event> oldestEvents = [];
     DateTime now = DateTime.now();

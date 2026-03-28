@@ -1,12 +1,11 @@
+import 'package:arci_ombriano/Utils/role.dart';
 import 'package:flutter/material.dart';
 import 'package:arci_ombriano/Utils/event.dart';
-import 'package:arci_ombriano/Utils/example_things.dart';
+import 'package:arci_ombriano/API/event.dart' as api;
 import 'package:intl/intl.dart';
-import 'package:arci_ombriano/API/add_event.dart';
 
 Widget deleteButton(BuildContext context, Event? event) {
   Color backColor = Theme.of(context).colorScheme.primary;
-
   return SizedBox(
     height: 60,
     child: ElevatedButton(
@@ -30,12 +29,11 @@ Widget confermButton(
   TextEditingController descController,
   TextEditingController dateController,
   TextEditingController timeController,
-  Map<String, TextEditingController> mapSelVolunteers,
+  Map<Role, TextEditingController> mapSelVolunteers,
   DateFormat stdDate,
   DateFormat stdTime,
 ) {
   Color backColor = Theme.of(context).colorScheme.primary;
-
   return Expanded(
     child: SizedBox(
       height: 60,
@@ -48,40 +46,35 @@ Widget confermButton(
             stdTime,
           );
 
+          Map<Role, Map<String, int>> buildVolunteers() {
+            return Map.fromEntries(
+              mapSelVolunteers.entries.map(
+                (entry) => MapEntry(
+                  Role(id: entry.key.id, name: entry.key.name),
+                  {'Current': 0, 'Max': int.tryParse(entry.value.text) ?? 0},
+                ),
+              ),
+            );
+          }
+
           if (event != null) {
             Event updateEvent = event.copyWith(
               nameEvent: titleController.text,
               description: descController.text,
               timeEvent: newDateTime,
-              mapVolunteers: Map.fromEntries(
-                mapSelVolunteers.entries.map(
-                  (role) => MapEntry(role.key, {
-                    'Current': 0,
-                    'Max': int.parse(role.value.text),
-                  }),
-                ),
-              ),
+              mapVolunteers: buildVolunteers(),
             );
             Navigator.pop(context, {'delete': false, 'event': updateEvent});
           }
-          if (event == null) {
-            exampleId++;
 
+          if (event == null) {
             Event newEvent = Event(
-              id: exampleId,
               nameEvent: titleController.text,
               description: descController.text,
               timeEvent: newDateTime,
-              mapVolunteers: Map.fromEntries(
-                mapSelVolunteers.entries.map(
-                  (role) => MapEntry(role.key, {
-                    'Current': 0,
-                    'Max': int.parse(role.value.text),
-                  }),
-                ),
-              ),
+              mapVolunteers: buildVolunteers(),
             );
-            addEvent(newEvent);
+            api.addEvent(newEvent);
             Navigator.pop(context, {'event': newEvent});
           }
         },
@@ -103,7 +96,6 @@ DateTime _formatDate(
 ) {
   DateTime pickedDate = stdDate.parse(date);
   DateTime pickedTime = stdTime.parse(time);
-
   return DateTime(
     pickedDate.year,
     pickedDate.month,

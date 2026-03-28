@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:arci_ombriano/Utils/example_things.dart';
+import 'package:arci_ombriano/API/roles.dart' as api;
+import 'package:arci_ombriano/Utils/role.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({super.key});
@@ -9,13 +10,24 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
+  List<Role> listRoles = [];
+  bool isLoading = true;
   late TextEditingController roleController;
 
   @override
   void initState() {
     super.initState();
+    _loadRoles();
     roleController = TextEditingController();
-    volunteersWork.sort((a, b) => a.compareTo(b));
+  }
+
+  Future<void> _loadRoles() async {
+    final roles = await api.getRoles();
+    setState(() {
+      listRoles = roles;
+      listRoles.sort((a, b) => a.name.compareTo(b.name));
+      isLoading = false;
+    });
   }
 
   @override
@@ -26,6 +38,7 @@ class _SettingPageState extends State<SettingPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) return const Center(child: CircularProgressIndicator());
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -49,7 +62,7 @@ class _SettingPageState extends State<SettingPage> {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        ...volunteersWork.map((role) => _singleRole(role)),
+                        ...listRoles.map((item) => _singleRole(item.name)),
                       ],
                     ),
                   ),
@@ -81,8 +94,9 @@ class _SettingPageState extends State<SettingPage> {
         controller: roleController,
       ),
       trailing: IconButton(
-        onPressed: () {
-          volunteersWork.add(roleController.text);
+        onPressed: () async {
+          final (newRole, check) = await api.addRole(roleController.text);
+          if (check) listRoles.add(newRole!);
           setState(() {
             roleController.text = '';
           });

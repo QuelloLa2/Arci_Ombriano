@@ -1,9 +1,10 @@
-import 'package:arci_ombriano/Utils/example_things.dart';
+import 'package:arci_ombriano/API/roles.dart' as api;
+import 'package:arci_ombriano/Utils/role.dart';
 import 'package:flutter/material.dart';
 
 class RoleSelector extends StatefulWidget {
-  final Function(Map<String, TextEditingController>)? selectedRoles;
-  final Map<String, TextEditingController> selectionRoles;
+  final Function(Map<Role, TextEditingController>)? selectedRoles;
+  final Map<Role, TextEditingController> selectionRoles;
 
   const RoleSelector({
     super.key,
@@ -16,13 +17,23 @@ class RoleSelector extends StatefulWidget {
 }
 
 class _RoleSelectorState extends State<RoleSelector> {
-  late Map<String, TextEditingController> selectedRoles = {};
+  late Map<Role, TextEditingController> selectedRoles = {};
+  List<Role> listRoles = [];
+  bool isLoading = true;
 
   @override
   void initState() {
-    selectedRoles = widget.selectionRoles;
-
     super.initState();
+    selectedRoles = Map.from(widget.selectionRoles);
+    _loadRoles();
+  }
+
+  Future<void> _loadRoles() async {
+    final roles = await api.getRoles();
+    setState(() {
+      listRoles = roles..sort((a, b) => a.name.compareTo(b.name));
+      isLoading = false;
+    });
   }
 
   @override
@@ -32,9 +43,6 @@ class _RoleSelectorState extends State<RoleSelector> {
 
   @override
   void dispose() {
-    for (var controller in selectedRoles.values) {
-      controller.dispose();
-    }
     super.dispose();
   }
 
@@ -48,25 +56,38 @@ class _RoleSelectorState extends State<RoleSelector> {
         ),
         elevation: 0,
         child: TextButton(
-          onPressed: () async {
-            final Map<String, TextEditingController>? result = await showDialog(
-              context: context,
-              builder: (context) => _alertSelector(context),
-            );
-            if (result != null) {
-              setState(() {
-                selectedRoles = result;
-              });
-              widget.selectedRoles?.call(selectedRoles);
-            }
-          },
-          child: Text("Seleziona ruoli"),
+          onPressed: isLoading
+              ? null
+              : () async {
+                  final Map<Role, TextEditingController>? result =
+                      await showDialog(
+                        context: context,
+                        builder: (context) =>
+                            _alertSelector(context, Map.from(selectedRoles)),
+                      );
+                  if (result != null) {
+                    setState(() {
+                      selectedRoles = result;
+                    });
+                    widget.selectedRoles?.call(selectedRoles);
+                  }
+                },
+          child: isLoading
+              ? SizedBox(
+                  height: 16,
+                  width: 16,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : Text("Seleziona ruoli"),
         ),
       ),
     );
   }
 
-  Widget _alertSelector(BuildContext context) {
+  Widget _alertSelector(
+    BuildContext context,
+    Map<Role, TextEditingController> tempSelected,
+  ) {
     return AlertDialog(
       content: StatefulBuilder(
         builder: (context, setStateDialog) {
@@ -75,17 +96,16 @@ class _RoleSelectorState extends State<RoleSelector> {
             width: double.maxFinite,
             child: ListView(
               shrinkWrap: true,
-              children: volunteersWork.map((role) {
+              children: listRoles.map((role) {
                 return CheckboxListTile(
-                  value: selectedRoles.containsKey(role),
-                  title: Text(role),
+                  value: tempSelected.containsKey(role),
+                  title: Text(role.name),
                   onChanged: (value) {
                     setStateDialog(() {
                       if (value == true) {
-                        selectedRoles[role] = TextEditingController(text: '1');
+                        tempSelected[role] = TextEditingController(text: '1');
                       } else {
-                        selectedRoles[role]?.dispose();
-                        selectedRoles.remove(role);
+                        tempSelected.remove(role);
                       }
                     });
                   },
@@ -97,15 +117,11 @@ class _RoleSelectorState extends State<RoleSelector> {
       ),
       actions: [
         ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.pop(context),
           child: Text("Esci", style: TextStyle(color: Colors.white)),
         ),
         ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context, selectedRoles);
-          },
+          onPressed: () => Navigator.pop(context, tempSelected),
           child: Text("Conferma", style: TextStyle(color: Colors.white)),
         ),
       ],

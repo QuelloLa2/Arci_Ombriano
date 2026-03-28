@@ -1,13 +1,15 @@
+import 'package:arci_ombriano/Utils/role.dart';
+
 class Event {
-  final int id;
+  int? id;
   String nameEvent;
   DateTime dateEvent;
   DateTime timeEvent;
   String description;
-  final Map<String, Map<String, int>> mapVolunteers;
+  final Map<Role, Map<String, int>> mapVolunteers;
 
   Event({
-    required this.id,
+    this.id,
     required this.nameEvent,
     required this.timeEvent,
     required this.description,
@@ -18,7 +20,7 @@ class Event {
     String? nameEvent,
     DateTime? timeEvent,
     String? description,
-    Map<String, Map<String, int>>? mapVolunteers,
+    Map<Role, Map<String, int>>? mapVolunteers,
   }) {
     return Event(
       id: id,

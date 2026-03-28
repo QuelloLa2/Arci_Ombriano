@@ -1,9 +1,10 @@
+import 'package:arci_ombriano/Utils/role.dart';
 import 'package:flutter/material.dart';
 
 class InformationPage extends StatefulWidget {
   final String titleEvent;
   final String descEvent;
-  final Map<String, Map<String, int>> mapVolunteers;
+  final Map<Role, Map<String, int>> mapVolunteers;
 
   const InformationPage({
     super.key,
@@ -17,7 +18,7 @@ class InformationPage extends StatefulWidget {
 }
 
 class _InformationPageState extends State<InformationPage> {
-  late Map<String, bool> mapIsSelected = {};
+  late Map<Role, bool> mapIsSelected = {};
 
   @override
   void initState() {
@@ -70,7 +71,7 @@ class _InformationPageState extends State<InformationPage> {
                     children: [
                       ...widget.mapVolunteers.entries.map(
                         (work) => _nameVolunteer(
-                          work.key,
+                          work.key.name,
                           work.value['Current'] ?? 0,
                           work.value['Max'] ?? 0,
                         ),
