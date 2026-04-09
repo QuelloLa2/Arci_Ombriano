@@ -1,5 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
+
 import 'package:arci_ombriano/Utils/event.dart';
 import 'package:arci_ombriano/Event/event_widget.dart';
 import 'package:arci_ombriano/Event/info_page.dart';
@@ -9,14 +10,16 @@ class EventPage extends StatefulWidget {
     super.key,
     required this.listEvents,
     required this.isAdmin,
+    required this.onRefresh,
     required this.modifyEvent,
     required this.addEvent,
     required this.deleteEvent,
   });
 
-  final List<Event> listEvents;
   final bool isAdmin;
+  final List<Event> listEvents;
 
+  final Future<void> Function() onRefresh;
   final Function(Event) modifyEvent;
   final Function(Event) addEvent;
   final Function(Event) deleteEvent;
@@ -26,30 +29,64 @@ class EventPage extends StatefulWidget {
 }
 
 class _EventPageState extends State<EventPage> {
+  late List<List<Event>> sortedList;
+
+  @override
+  void initState() {
+    super.initState();
+    sortedList = _sortEvents();
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<List<Event>> sortedList = _sortEvents(widget.listEvents);
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          _titleEvent(Theme.of(context).colorScheme.primary, "Eventi prossimi"),
-
+    return RefreshIndicator(
+      onRefresh: _newEvents,
+      child: CustomScrollView(
+        physics: AlwaysScrollableScrollPhysics(),
+        slivers: [
+          SliverToBoxAdapter(
+            child: _titleEvent(
+              Theme.of(context).colorScheme.primary,
+              "Eventi prossimi",
+            ),
+          ),
           sortedList[0].isEmpty
-              ? Column(
-                  children: [
-                    SizedBox(height: 20),
-                    Text(
-                      "Non ci sono eventi",
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.w500,
+              ? SliverToBoxAdapter(
+                  child: Column(
+                    children: [
+                      SizedBox(height: 20),
+                      Text(
+                        "Non ci sono eventi",
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 20),
-                  ],
+                      SizedBox(height: 20),
+                    ],
+                  ),
                 )
-              : Column(children: [_eventListTiles(sortedList[0])]),
-          sortedList[1].isEmpty ? SizedBox() : _pastEventCard(sortedList[1]),
+              : SliverList(
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final event = sortedList[0][index];
+                    return Column(
+                      children: [
+                        _isSameDate(index, sortedList[0]),
+                        EventWidget(
+                          key: ValueKey(event.id),
+                          event: event,
+                          index: index,
+                          primary: Theme.of(context).colorScheme.primary,
+                          modifyEvent: widget.modifyEvent,
+                          deleteEvent: widget.deleteEvent,
+                          isAdmin: widget.isAdmin,
+                        ),
+                      ],
+                    );
+                  }, childCount: sortedList[0].length),
+                ),
+          if (sortedList[1].isNotEmpty)
+            SliverToBoxAdapter(child: _pastEventCard(sortedList[1])),
         ],
       ),
     );
@@ -92,31 +129,6 @@ class _EventPageState extends State<EventPage> {
           letterSpacing: -0.7,
         ),
       ),
-    );
-  }
-
-  Widget _eventListTiles(List<Event> eventlist) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemCount: eventlist.length,
-      itemBuilder: (context, index) {
-        final event = eventlist[index];
-        return Column(
-          children: [
-            _isSameDate(index, eventlist),
-            EventWidget(
-              key: ValueKey(event.id),
-              event: event,
-              index: index,
-              primary: Theme.of(context).colorScheme.primary,
-              modifyEvent: widget.modifyEvent,
-              deleteEvent: widget.deleteEvent,
-              isAdmin: widget.isAdmin,
-            ),
-          ],
-        );
-      },
     );
   }
 
@@ -220,15 +232,23 @@ class _EventPageState extends State<EventPage> {
     );
   }
 
+  Future _newEvents() async {
+    await widget.onRefresh();
+    setState(() {
+      sortedList = _sortEvents();
+    });
+  }
+
   // Sort and Divide eventlist in Newest e Oldest
-  List<List<Event>> _sortEvents(List<Event> events) {
-    events.sort((a, b) => a.timeEvent.compareTo(b.timeEvent));
+  List<List<Event>> _sortEvents() {
+    final sorted = List<Event>.from(widget.listEvents);
+    sorted.sort((a, b) => a.timeEvent.compareTo(b.timeEvent));
 
     List<Event> newestEvents = [];
     List<Event> oldestEvents = [];
     DateTime now = DateTime.now();
 
-    for (var event in events) {
+    for (var event in sorted) {
       if (event.dateEvent.isAfter(now)) {
         newestEvents.add(event);
       } else {

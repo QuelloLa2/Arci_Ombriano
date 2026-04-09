@@ -5,8 +5,8 @@ import 'dart:convert';
 
 Future<List<Role>> getRoles() async {
   final response = await http.get(
-    Uri.parse('${info.url}roles'),
-    headers: info.header,
+    Uri.parse('${info.url}/roles'),
+    headers: await info.getHeaders(),
   );
 
   List<Role> listRoles = [];
@@ -30,8 +30,8 @@ Future<List<Role>> getRoles() async {
 
 Future<(Role?, bool)> addRole(String name) async {
   final response = await http.post(
-    Uri.parse('${info.url}roles'),
-    headers: info.header,
+    Uri.parse('${info.url}/roles'),
+    headers: await info.getHeaders(),
     body: jsonEncode({"name": name}),
   );
 

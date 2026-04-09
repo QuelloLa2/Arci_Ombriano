@@ -10,16 +10,17 @@ import 'package:arci_ombriano/Event/event_page.dart';
 import 'package:arci_ombriano/Setting/setting_page.dart';
 import 'package:arci_ombriano/Utils/event.dart';
 import 'package:arci_ombriano/Utils/menu_button.dart';
-import 'package:arci_ombriano/Utils/example_things.dart';
 import 'package:arci_ombriano/API/event.dart' as api;
-import "package:flutter_secure_storage/flutter_secure_storage.dart";
+import 'package:arci_ombriano/Utils/user.dart';
+import 'package:arci_ombriano/Utils/storage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('it_IT', null);
-
   runApp(const MyApp());
 }
+
+enum AuthState { loading, authenticated, unauthenticated }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'Arci Ombriano',
       theme: appTheme,
       locale: const Locale('it', 'IT'),
       supportedLocales: const [Locale('it', 'IT')],
@@ -50,63 +51,94 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final storage = FlutterSecureStorage();
+  AuthState _authState = AuthState.loading;
+  late User _user;
+  List<Event> _events = [];
+  late int _activePage;
 
-  List<Event> events = [];
-
-  final List<String> titleText = ["Calendario", "Eventi", "Account", "Setting"];
-
-  int _activepage = 1;
+  final List<String> _titleText = ["Calendario", "Eventi", "Setting"];
 
   @override
   void initState() {
     super.initState();
-    _loadEvents();
+    _activePage = 1;
+    _checkAuthAndLoad();
+  }
+
+  Future<void> _checkAuthAndLoad() async {
+    final token = await storage.read(key: 'token');
+    final userId = await storage.read(key: 'user_id');
+    final userName = await storage.read(key: 'user_name');
+    final isAdmin = await storage.read(key: 'is_admin');
+
+    if (token != null && userId != null && userName != null) {
+      _user = User(
+        id: int.parse(userId),
+        name: userName,
+        isAdmin: isAdmin == 'true',
+        token: token,
+      );
+      setState(() => _authState = AuthState.authenticated);
+      await _loadEvents();
+    } else {
+      setState(() => _authState = AuthState.unauthenticated);
+    }
   }
 
   Future<void> _loadEvents() async {
     final (fetchedEvents, success) = await api.getEvent();
-
     if (success && fetchedEvents != null) {
       setState(() {
-        events = fetchedEvents;
-        events = _sortEvents();
+        _events = _sortEvents(fetchedEvents);
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> pages = [
-      CalendarPage(listEvents: events),
+    return switch (_authState) {
+      AuthState.loading => const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      ),
+      AuthState.unauthenticated => SigninPage(onLoginSuccess: _onLoginSuccess),
+      AuthState.authenticated => _buildMainScaffold(),
+    };
+  }
+
+  void _onLoginSuccess(User user) {
+    setState(() {
+      _user = user;
+      _authState = AuthState.authenticated;
+      _activePage = 1;
+    });
+    _loadEvents();
+  }
+
+  Widget _buildMainScaffold() {
+    final pages = [
+      CalendarPage(listEvents: _events),
       EventPage(
-        listEvents: events,
-        isAdmin: user.isAdmin,
+        listEvents: _events,
+        onRefresh: () => _loadEvents(),
+        isAdmin: _user.isAdmin,
         modifyEvent: _editEvent,
         addEvent: _addEvent,
         deleteEvent: _deleteEvent,
       ),
-      SigninPage(),
-      SettingPage(),
+      SettingPage(user: _user),
     ];
 
     return Scaffold(
-      appBar: TopBar(titlePage: titleText[_activepage]),
-      body: pages[_activepage],
-      floatingActionButton: user.isAdmin && _activepage != 2 && _activepage != 3
+      appBar: TopBar(titlePage: _titleText[_activePage]),
+      body: pages[_activePage],
+      floatingActionButton: _user.isAdmin && _activePage != 2
           ? AddEventButton(addEvent: _addEvent)
           : null,
-      bottomNavigationBar: _bottomBar(),
+      bottomNavigationBar: _buildBottomBar(),
     );
   }
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _activepage = index;
-    });
-  }
-
-  Widget _bottomBar() {
+  Widget _buildBottomBar() {
     return BottomNavigationBar(
       selectedItemColor: Theme.of(context).colorScheme.primary,
       unselectedItemColor: const Color(0xFF7B8284),
@@ -116,45 +148,41 @@ class _MyHomePageState extends State<MyHomePage> {
       selectedFontSize: 15,
       enableFeedback: true,
       items: [
-        _item(Icons.calendar_month, "Calendario"),
-        _item(Icons.event_note, "Eventi"),
-        _item(Icons.account_circle_rounded, "Account"),
-        //Only development thing
-        _item(Icons.settings, "Setting"),
+        _navItem(Icons.calendar_month, "Calendario"),
+        _navItem(Icons.event_note, "Eventi"),
+        _navItem(Icons.settings, "Setting"),
       ],
-      currentIndex: _activepage,
-      onTap: _onItemTapped,
+      currentIndex: _activePage,
+      onTap: (index) => setState(() => _activePage = index),
     );
   }
 
-  BottomNavigationBarItem _item(IconData icon, String data) {
-    return BottomNavigationBarItem(icon: Icon(icon), label: data);
+  BottomNavigationBarItem _navItem(IconData icon, String label) {
+    return BottomNavigationBarItem(icon: Icon(icon), label: label);
   }
 
   void _editEvent(Event updatedEvent) {
     setState(() {
-      final index = events.indexWhere((e) => e.id == updatedEvent.id);
+      final index = _events.indexWhere((e) => e.id == updatedEvent.id);
       if (index != -1) {
-        events[index] = updatedEvent;
-        events = _sortEvents();
+        _events[index] = updatedEvent;
+        _events = _sortEvents(_events);
       }
     });
   }
 
   void _addEvent(Event newEvent) {
     setState(() {
-      events.add(newEvent);
-      events = _sortEvents();
+      _events.add(newEvent);
+      _events = _sortEvents(_events);
     });
   }
 
   void _deleteEvent(Event deletedEvent) {
-    setState(() {
-      events.remove(deletedEvent);
-    });
+    setState(() => _events.remove(deletedEvent));
   }
 
-  List<Event> _sortEvents() {
+  List<Event> _sortEvents(List<Event> events) {
     final sorted = List<Event>.from(events)
       ..sort((a, b) => a.timeEvent.compareTo(b.timeEvent));
 

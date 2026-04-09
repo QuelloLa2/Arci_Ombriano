@@ -1,9 +1,12 @@
-String _token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJfaWQiOjEsInNob3duYW1lIjoiVXNlciIsImlzX2FkbWluIjp0cnVlLCJleHAiOjE3NzY3MTI5NzYsImlhdCI6MTc3NDEyMDk3Nn0.R0p_bi_s63smsnitUZUMY_jgTj-PJ8nY_SDL5C1LhMQ';
+import 'package:arci_ombriano/Utils/storage.dart';
 
-Map<String, String> header = {
-  'Content-Type': 'application/json; charset=UTF-8',
-  'Authorization': 'Bearer $_token',
-};
+Future<Map<String, String>> getHeaders() async {
+  final token = await storage.read(key: 'token');
 
-String url = 'http://10.0.0.2:8080/';
+  return {
+    'Content-Type': 'application/json; charset=UTF-8',
+    'Authorization': 'Bearer $token',
+  };
+}
+
+const String url = 'http://10.0.0.2:8080';

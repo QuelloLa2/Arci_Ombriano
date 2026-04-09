@@ -8,8 +8,8 @@ typedef RoleMap = Map<Role, Map<String, int>>;
 
 void addEvent(Event event) async {
   final response = await http.post(
-    Uri.parse('${info.url}events'),
-    headers: info.header,
+    Uri.parse('${info.url}/events'),
+    headers: await info.getHeaders(),
     body: jsonEncode({
       'name': event.nameEvent,
       'description': event.description,
@@ -21,7 +21,10 @@ void addEvent(Event event) async {
   );
 
   if (response.statusCode == 200 || response.statusCode == 201) {
-    print(response.body);
+    assert(() {
+      print(response.body);
+      return true;
+    }());
   } else {
     throw Exception(
       'Failed to add event: ${response.statusCode} - ${response.body}',
@@ -31,8 +34,8 @@ void addEvent(Event event) async {
 
 Future<(List<Event>?, bool)> getEvent() async {
   final response = await http.get(
-    Uri.parse('${info.url}events'),
-    headers: info.header,
+    Uri.parse('${info.url}/events'),
+    headers: await info.getHeaders(),
   );
 
   if (response.statusCode == 200 || response.statusCode == 201) {

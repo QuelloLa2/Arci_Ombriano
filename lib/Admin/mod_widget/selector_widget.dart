@@ -3,14 +3,14 @@ import 'package:arci_ombriano/Utils/role.dart';
 import 'package:flutter/material.dart';
 
 class RoleSelector extends StatefulWidget {
-  final Function(Map<Role, TextEditingController>)? selectedRoles;
-  final Map<Role, TextEditingController> selectionRoles;
-
   const RoleSelector({
     super.key,
     required this.selectedRoles,
     required this.selectionRoles,
   });
+
+  final Function(Map<Role, TextEditingController>)? selectedRoles;
+  final Map<Role, TextEditingController> selectionRoles;
 
   @override
   State<RoleSelector> createState() => _RoleSelectorState();

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:arci_ombriano/Account/widgets.dart';
+import 'package:arci_ombriano/Utils/user.dart';
+import 'package:arci_ombriano/API/account.dart' as api;
+import 'package:arci_ombriano/Utils/storage.dart' as data;
 
 class SigninPage extends StatefulWidget {
-  const SigninPage({super.key});
+  const SigninPage({super.key, required this.onLoginSuccess});
 
+  final Function(User user) onLoginSuccess;
   @override
   State<SigninPage> createState() => _AccountPageState();
 }
@@ -18,25 +21,33 @@ class _AccountPageState extends State<SigninPage> {
   }
 
   @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(50),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Bentornato!",
-            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 40),
-          ),
-          SizedBox(height: 10),
-          textField("Email", _emailController),
-          SizedBox(height: 10),
-          _button("Accedi"),
-          SizedBox(height: 10),
-          textButton("Non hai ancora un account?"),
-          SizedBox(height: 10),
-        ],
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(50),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Bentornato!",
+              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 40),
+            ),
+            SizedBox(height: 10),
+            _textField("Email", _emailController),
+            SizedBox(height: 10),
+            _button("Accedi"),
+            SizedBox(height: 10),
+            _textButton("Non hai ancora un account?"),
+            SizedBox(height: 10),
+          ],
+        ),
       ),
     );
   }
@@ -53,17 +64,57 @@ class _AccountPageState extends State<SigninPage> {
             ),
           ),
         ),
-        onPressed: () {
-          if (_emailController.text.isEmpty) {
-            print("scrivi qualcosa dai");
+        onPressed: () async {
+          if (_emailController.text.isEmpty) return;
+
+          final (user, success) = await api.logIn(_emailController.text);
+
+          if (success && user != null) {
+            await data.storage.write(key: 'token', value: user.token);
+            await data.storage.write(key: 'user_id', value: user.id.toString());
+            await data.storage.write(key: 'user_name', value: user.name);
+            await data.storage.write(
+              key: 'is_admin',
+              value: user.isAdmin.toString(),
+            );
+
+            widget.onLoginSuccess(user);
           } else {
-            print("bravo");
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text("Email non trovata")));
           }
         },
         child: Text(
           label,
           textScaler: TextScaler.linear(2),
           style: TextStyle(color: Theme.of(context).colorScheme.surface),
+        ),
+      ),
+    );
+  }
+
+  Widget _textField(String label, TextEditingController controller) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          gapPadding: 2.5,
+        ),
+        labelText: label,
+      ),
+    );
+  }
+
+  Widget _textButton(String label) {
+    return Center(
+      child: TextButton(
+        onPressed: () {},
+        child: Text(
+          label,
+          textAlign: TextAlign.center,
+          style: TextStyle(decoration: TextDecoration.underline),
         ),
       ),
     );
