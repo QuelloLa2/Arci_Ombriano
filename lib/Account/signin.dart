@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:arci_ombriano/Utils/user.dart';
 import 'package:arci_ombriano/API/account.dart' as api;
 import 'package:arci_ombriano/Utils/storage.dart' as data;
+import 'package:arci_ombriano/Account/signup.dart';
 
 class SigninPage extends StatefulWidget {
   const SigninPage({super.key, required this.onLoginSuccess});
@@ -110,7 +111,13 @@ class _AccountPageState extends State<SigninPage> {
   Widget _textButton(String label) {
     return Center(
       child: TextButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => SignupPage(onLoginSuccess: widget.onLoginSuccess),
+            ),
+          );
+        },
         child: Text(
           label,
           textAlign: TextAlign.center,

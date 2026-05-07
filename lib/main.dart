@@ -55,6 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late User _user;
   List<Event> _events = [];
   late int _activePage;
+  bool _eventsLoading = true;
 
   final List<String> _titleText = ["Calendario", "Eventi", "Setting"];
 
@@ -78,8 +79,11 @@ class _MyHomePageState extends State<MyHomePage> {
         isAdmin: isAdmin == 'true',
         token: token,
       );
-      setState(() => _authState = AuthState.authenticated);
       await _loadEvents();
+      setState(() {
+        _authState = AuthState.authenticated;
+        _eventsLoading = false;
+      });
     } else {
       setState(() => _authState = AuthState.unauthenticated);
     }
@@ -101,7 +105,10 @@ class _MyHomePageState extends State<MyHomePage> {
         body: Center(child: CircularProgressIndicator()),
       ),
       AuthState.unauthenticated => SigninPage(onLoginSuccess: _onLoginSuccess),
-      AuthState.authenticated => _buildMainScaffold(),
+      AuthState.authenticated =>
+        _eventsLoading
+            ? const Scaffold(body: Center(child: CircularProgressIndicator()))
+            : _buildMainScaffold(),
     };
   }
 
@@ -109,9 +116,10 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _user = user;
       _authState = AuthState.authenticated;
+      _eventsLoading = true;
       _activePage = 1;
     });
-    _loadEvents();
+    _loadEvents().then((_) => setState(() => _eventsLoading = false));
   }
 
   Widget _buildMainScaffold() {

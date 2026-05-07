@@ -19,6 +19,8 @@ dependencies:
   multiselect_field: ^2.0.0
   http: ^1.6.0
   flutter_secure_storage: ^10.0.0
+  dio: ^5.7.0
+  dio_smart_retry: ^6.0.0
 
 dev_dependencies:
   flutter_test:

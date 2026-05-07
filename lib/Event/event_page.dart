@@ -214,11 +214,7 @@ class _EventPageState extends State<EventPage> {
                     onTap: () {
                       Navigator.of(context, rootNavigator: true).push(
                         MaterialPageRoute(
-                          builder: (_) => InformationPage(
-                            titleEvent: event.nameEvent,
-                            descEvent: event.description,
-                            mapVolunteers: event.mapVolunteers,
-                          ),
+                          builder: (_) => InformationPage(event: event),
                         ),
                       );
                     },

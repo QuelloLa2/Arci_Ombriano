@@ -9,4 +9,6 @@ Future<Map<String, String>> getHeaders() async {
   };
 }
 
-const String url = 'http://10.0.0.2:8080';
+const String url = 'https://app.quellola.com';
+
+

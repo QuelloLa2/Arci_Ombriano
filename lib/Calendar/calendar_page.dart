@@ -164,11 +164,7 @@ class _CalendarPageState extends State<CalendarPage> {
         onTap: () {
           Navigator.of(context, rootNavigator: true).push(
             MaterialPageRoute(
-              builder: (_) => InformationPage(
-                titleEvent: event.nameEvent,
-                descEvent: event.description,
-                mapVolunteers: event.mapVolunteers,
-              ),
+              builder: (_) => InformationPage(event: event),
             ),
           );
         },

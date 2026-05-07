@@ -1,6 +1,8 @@
 import 'package:arci_ombriano/Event/info_page.dart';
 import 'package:arci_ombriano/Admin/mod_event.dart';
 import 'package:arci_ombriano/Utils/event.dart';
+import 'package:arci_ombriano/Utils/role.dart';
+import 'package:arci_ombriano/API/event.dart' as api;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -27,23 +29,16 @@ class EventWidget extends StatefulWidget {
 }
 
 class _EventWidgetState extends State<EventWidget> {
-  Map<String, bool> mapIsSelected = {};
+  bool _isLoading = false;
 
-  @override
-  void initState() {
-    mapIsSelected = {
-      for (final key in widget.event.mapVolunteers.keys) key.name: false,
-    };
-    super.initState();
-  }
+  Role? get _myRole => widget.event.mapVolunteers.keys.cast<Role?>().firstWhere(
+    (r) => r?.id == widget.event.selectedRole,
+    orElse: () => null,
+  );
 
   @override
   void didUpdateWidget(covariant EventWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-
-    for (final key in widget.event.mapVolunteers.keys) {
-      mapIsSelected.putIfAbsent(key.name, () => false);
-    }
   }
 
   @override
@@ -54,15 +49,15 @@ class _EventWidgetState extends State<EventWidget> {
     return InkWell(
       enableFeedback: false,
       onTap: () {
-        Navigator.of(context, rootNavigator: true).push(
-          MaterialPageRoute(
-            builder: (_) => InformationPage(
-              titleEvent: event.nameEvent,
-              descEvent: event.description,
-              mapVolunteers: event.mapVolunteers,
-            ),
-          ),
-        );
+        Navigator.of(context, rootNavigator: true)
+            .push(
+              MaterialPageRoute(builder: (_) => InformationPage(event: event)),
+            )
+            .then((updatedEvent) {
+              if (updatedEvent is Event) {
+                widget.modifyEvent(updatedEvent);
+              }
+            });
       },
       child: Container(
         margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 3),
@@ -76,7 +71,7 @@ class _EventWidgetState extends State<EventWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            //Title Event
+            // Title Event
             Row(
               children: [
                 Text(
@@ -84,13 +79,12 @@ class _EventWidgetState extends State<EventWidget> {
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
                 ),
                 const Expanded(child: SizedBox()),
-
                 widget.isAdmin ? _editButton() : SizedBox(),
                 const SizedBox(width: 10),
               ],
             ),
 
-            //Description
+            // Description
             Text(
               event.description,
               style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
@@ -98,11 +92,11 @@ class _EventWidgetState extends State<EventWidget> {
               overflow: TextOverflow.ellipsis,
             ),
 
-            //Volunteers
+            // Volunteers — tap diretto per iscriversi
             Wrap(
               spacing: 5,
               children: event.mapVolunteers.keys
-                  .map((work) => textVolunteer(work.name))
+                  .map((role) => _roleButton(role))
                   .toList(),
             ),
 
@@ -117,6 +111,13 @@ class _EventWidgetState extends State<EventWidget> {
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                 ),
                 const Expanded(child: SizedBox()),
+                // Spinner durante il caricamento
+                if (_isLoading)
+                  SizedBox(
+                    height: 18,
+                    width: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
               ],
             ),
           ],
@@ -125,25 +126,35 @@ class _EventWidgetState extends State<EventWidget> {
     );
   }
 
-  Widget textVolunteer(String volunteer) {
+  Widget _roleButton(Role role) {
+    final bool isMyRole = _myRole?.id == role.id;
+    final counts = widget.event.mapVolunteers[role];
+    final bool isFull =
+        !isMyRole &&
+        (counts != null && (counts['Current'] ?? 0) >= (counts['Max'] ?? 0));
+
     return TextButton(
-      onPressed: () {
-        setState(() {
-          if (mapIsSelected[volunteer] == true) {
-            mapIsSelected.updateAll((work, _) => false);
-          } else {
-            mapIsSelected.updateAll((work, _) => work == volunteer);
-          }
-        });
-      },
+      onPressed: _isLoading
+          ? null
+          : () {
+              if (isMyRole) {
+                _disiscrivi();
+              } else if (!isFull) {
+                _iscriviti(role);
+              }
+            },
       style: TextButton.styleFrom(padding: EdgeInsets.all(4)),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          mapIsSelected[volunteer] == true
+          // Icona: check se iscritto, cerchio pieno off se pieno, radio altrimenti
+          isMyRole
+              ? Icon(Icons.check_circle, size: 24, color: widget.primary)
+              : isFull
               ? Icon(
-                  Icons.radio_button_checked_outlined,
+                  Icons.radio_button_off_outlined,
                   size: 24,
-                  color: Colors.black,
+                  color: Colors.grey,
                 )
               : Icon(
                   Icons.radio_button_off_outlined,
@@ -152,12 +163,64 @@ class _EventWidgetState extends State<EventWidget> {
                 ),
           const SizedBox(width: 3),
           Text(
-            volunteer,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            role.name,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: isFull && !isMyRole ? Colors.grey : Colors.black,
+            ),
           ),
         ],
       ),
     );
+  }
+
+  Future<void> _iscriviti(Role role) async {
+    if (widget.event.id == null) return;
+    setState(() => _isLoading = true);
+
+    final (success, error) = await api.partecipate(widget.event.id!, role.name);
+
+    setState(() => _isLoading = false);
+
+    if (success) {
+      widget.modifyEvent(widget.event.copyWith(selectedRole: role.id));
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Iscritto come ${role.name}!')));
+      }
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(error ?? "Errore durante l'iscrizione")),
+        );
+      }
+    }
+  }
+
+  Future<void> _disiscrivi() async {
+    if (widget.event.id == null) return;
+    setState(() => _isLoading = true);
+
+    final (success, error) = await api.disiscrivi(widget.event.id!);
+
+    setState(() => _isLoading = false);
+
+    if (success) {
+      widget.modifyEvent(widget.event.copyWith(clearSelectedRole: true));
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Disiscritto con successo')));
+      }
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(error ?? 'Errore durante la disiscrizione')),
+        );
+      }
+    }
   }
 
   Widget _editButton() {
