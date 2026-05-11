@@ -14,10 +14,12 @@ class EventPage extends StatefulWidget {
     required this.modifyEvent,
     required this.addEvent,
     required this.deleteEvent,
+    required this.currentUserName,
   });
 
   final bool isAdmin;
   final List<Event> listEvents;
+  final String currentUserName;
 
   final Future<void> Function() onRefresh;
   final Function(Event) modifyEvent;
@@ -35,6 +37,16 @@ class _EventPageState extends State<EventPage> {
   void initState() {
     super.initState();
     sortedList = _sortEvents();
+  }
+
+  @override
+  void didUpdateWidget(covariant EventPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.listEvents != widget.listEvents) {
+      setState(() {
+        sortedList = _sortEvents();
+      });
+    }
   }
 
   @override
@@ -80,6 +92,7 @@ class _EventPageState extends State<EventPage> {
                           modifyEvent: widget.modifyEvent,
                           deleteEvent: widget.deleteEvent,
                           isAdmin: widget.isAdmin,
+                          currentUserName: widget.currentUserName,
                         ),
                       ],
                     );
@@ -214,7 +227,7 @@ class _EventPageState extends State<EventPage> {
                     onTap: () {
                       Navigator.of(context, rootNavigator: true).push(
                         MaterialPageRoute(
-                          builder: (_) => InformationPage(event: event),
+                          builder: (_) => InformationPage(event: event, currentUserName: widget.currentUserName),
                         ),
                       );
                     },

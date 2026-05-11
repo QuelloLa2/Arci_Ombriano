@@ -136,3 +136,19 @@ Future<(bool, String?)> disiscrivi(int eventId) async {
   return (false, 'Errore durante la disiscrizione');
 }
 
+Future<bool> deleteEvent(int eventId) async {
+  final response = await http.delete(
+    Uri.parse('${info.url}/events/$eventId'),
+    headers: await info.getHeaders(),
+  );
+
+  if (response.statusCode == 200 || response.statusCode == 201) {
+    return true;
+  }
+
+  print(
+    'Failed to delete event $eventId: ${response.statusCode} - ${response.body}',
+  );
+  return false;
+}
+

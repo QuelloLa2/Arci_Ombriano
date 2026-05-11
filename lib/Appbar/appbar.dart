@@ -16,14 +16,24 @@ class _TopBarState extends State<TopBar> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      leading: Container(
-        margin: EdgeInsets.only(left: 20),
-        child: Image.asset('assets/Images/logo.png'),
+      leading: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: Image.asset(
+            'assets/Images/logo.png',
+            fit: BoxFit.contain,
+          ),
+        ),
       ),
       centerTitle: true,
       title: Text(
         widget.titlePage,
-        style: TextStyle(fontWeight: FontWeight.w600, fontSize: 26),
+        style: const TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 22,
+          letterSpacing: 0.5,
+        ),
       ),
     );
   }

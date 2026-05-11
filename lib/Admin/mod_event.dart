@@ -102,10 +102,10 @@ class _ModEventState extends State<ModEvent> {
       centerTitle: true,
       leading: IconButton(
         onPressed: () => Navigator.pop(context),
-        icon: Icon(
+        icon: const Icon(
           Icons.keyboard_arrow_left_rounded,
           size: 32,
-          color: Colors.white,
+          color: Color(0xFF171717),
         ),
       ),
       title: Text(
@@ -214,7 +214,7 @@ class _ModEventState extends State<ModEvent> {
                       selectedRoles.remove(roleKey);
                     });
                   },
-                  icon: Icon(Icons.person_remove, color: Colors.white),
+                  icon: Icon(Icons.person_remove, color: Colors.black),
                 ),
               ],
             ),

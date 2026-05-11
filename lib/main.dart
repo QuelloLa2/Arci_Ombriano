@@ -124,7 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildMainScaffold() {
     final pages = [
-      CalendarPage(listEvents: _events),
+      CalendarPage(listEvents: _events, currentUserName: _user.name),
       EventPage(
         listEvents: _events,
         onRefresh: () => _loadEvents(),
@@ -132,8 +132,9 @@ class _MyHomePageState extends State<MyHomePage> {
         modifyEvent: _editEvent,
         addEvent: _addEvent,
         deleteEvent: _deleteEvent,
+        currentUserName: _user.name,
       ),
-      SettingPage(user: _user),
+      SettingPage(user: _user, onLogout: _logout),
     ];
 
     return Scaffold(
@@ -174,20 +175,32 @@ class _MyHomePageState extends State<MyHomePage> {
       final index = _events.indexWhere((e) => e.id == updatedEvent.id);
       if (index != -1) {
         _events[index] = updatedEvent;
-        _events = _sortEvents(_events);
+        _events = _sortEvents(List.from(_events));
       }
     });
   }
 
   void _addEvent(Event newEvent) {
     setState(() {
-      _events.add(newEvent);
-      _events = _sortEvents(_events);
+      _events = _sortEvents([..._events, newEvent]);
     });
   }
 
   void _deleteEvent(Event deletedEvent) {
-    setState(() => _events.remove(deletedEvent));
+    setState(() {
+      _events = _events.where((e) => e != deletedEvent).toList();
+    });
+  }
+
+  Future<void> _logout() async {
+    await storage.delete(key: 'token');
+    await storage.delete(key: 'user_id');
+    await storage.delete(key: 'user_name');
+    await storage.delete(key: 'is_admin');
+    setState(() {
+      _authState = AuthState.unauthenticated;
+      _events = [];
+    });
   }
 
   List<Event> _sortEvents(List<Event> events) {

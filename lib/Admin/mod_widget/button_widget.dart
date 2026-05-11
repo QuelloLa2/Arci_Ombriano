@@ -9,8 +9,18 @@ Widget deleteButton(BuildContext context, Event? event) {
   return SizedBox(
     height: 60,
     child: ElevatedButton(
-      onPressed: () {
-        Navigator.pop(context, {'delete': true, 'event': event});
+      onPressed: () async {
+        if (event?.id == null) return;
+        print('Attempting to delete event with id: ${event!.id}');
+        final success = await api.deleteEvent(event.id!);
+        print('Delete event result: $success');
+        if (success && context.mounted) {
+          Navigator.pop(context, {'delete': true, 'event': event});
+        } else if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Errore durante l\'eliminazione')),
+          );
+        }
       },
       style: ElevatedButton.styleFrom(
         shape: CircleBorder(),

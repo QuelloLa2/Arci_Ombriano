@@ -30,24 +30,49 @@ class _AccountPageState extends State<SigninPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(50),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Bentornato!",
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 40),
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Icon(
+                  Icons.account_circle_outlined,
+                  size: 80,
+                  color: Color(0xFFC74E43),
+                ),
+                const SizedBox(height: 24),
+                const Text(
+                  "Bentornato!",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 32,
+                    letterSpacing: -0.5,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  "Accedi per continuare",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Color(0xFF7B8284),
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                const SizedBox(height: 40),
+                _textField("Email", _emailController, Icons.email_outlined),
+                const SizedBox(height: 20),
+                _button("Accedi"),
+                const SizedBox(height: 16),
+                _textButton("Non hai ancora un account?"),
+                const SizedBox(height: 16),
+              ],
             ),
-            SizedBox(height: 10),
-            _textField("Email", _emailController),
-            SizedBox(height: 10),
-            _button("Accedi"),
-            SizedBox(height: 10),
-            _textButton("Non hai ancora un account?"),
-            SizedBox(height: 10),
-          ],
+          ),
         ),
       ),
     );
@@ -56,15 +81,8 @@ class _AccountPageState extends State<SigninPage> {
   Widget _button(String label) {
     return SizedBox(
       width: double.infinity,
-      height: 50,
+      height: 54,
       child: ElevatedButton(
-        style: ButtonStyle(
-          shape: WidgetStatePropertyAll<RoundedRectangleBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadiusGeometry.all(Radius.circular(18)),
-            ),
-          ),
-        ),
         onPressed: () async {
           if (_emailController.text.isEmpty) return;
 
@@ -86,23 +104,21 @@ class _AccountPageState extends State<SigninPage> {
             ).showSnackBar(SnackBar(content: Text("Email non trovata")));
           }
         },
-        child: Text(
-          label,
-          textScaler: TextScaler.linear(2),
-          style: TextStyle(color: Theme.of(context).colorScheme.surface),
-        ),
+        child: Text(label),
       ),
     );
   }
 
-  Widget _textField(String label, TextEditingController controller) {
+  Widget _textField(
+    String label,
+    TextEditingController controller,
+    IconData icon,
+  ) {
     return TextField(
       controller: controller,
+      keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-          gapPadding: 2.5,
-        ),
+        prefixIcon: Icon(icon, size: 20, color: const Color(0xFF7B8284)),
         labelText: label,
       ),
     );
@@ -118,11 +134,7 @@ class _AccountPageState extends State<SigninPage> {
             ),
           );
         },
-        child: Text(
-          label,
-          textAlign: TextAlign.center,
-          style: TextStyle(decoration: TextDecoration.underline),
-        ),
+        child: Text(label),
       ),
     );
   }

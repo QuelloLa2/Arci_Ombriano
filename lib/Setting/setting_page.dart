@@ -4,8 +4,9 @@ import 'package:arci_ombriano/Utils/user.dart';
 import 'package:arci_ombriano/Utils/role.dart';
 
 class SettingPage extends StatefulWidget {
-  const SettingPage({super.key, required this.user});
+  const SettingPage({super.key, required this.user, required this.onLogout});
   final User user;
+  final VoidCallback onLogout;
 
   @override
   State<SettingPage> createState() => _SettingPageState();
@@ -43,46 +44,139 @@ class _SettingPageState extends State<SettingPage> {
   @override
   Widget build(BuildContext context) {
     if (isLoading) return const Center(child: CircularProgressIndicator());
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            "Nome: ${widget.user.name}",
-            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 28),
-          ),
-          widget.user.isAdmin ? _adminRole() : const SizedBox(),
+          _userCard(),
+          const SizedBox(height: 16),
+          _logoutButton(),
+          const SizedBox(height: 24),
+          if (widget.user.isAdmin) _adminRole(),
         ],
+      ),
+    );
+  }
+
+  Widget _userCard() {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Row(
+          children: [
+            Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary.withAlpha(30),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.person_rounded,
+                size: 30,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Utente",
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: Color(0xFF7B8284),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    widget.user.name,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (widget.user.isAdmin)
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.secondary.withAlpha(50),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Text(
+                  "Admin",
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF171717),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _logoutButton() {
+    return SizedBox(
+      width: double.infinity,
+      height: 50,
+      child: OutlinedButton.icon(
+        onPressed: () => widget.onLogout(),
+        icon: const Icon(Icons.logout_rounded, size: 20),
+        label: const Text("Esci"),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: Theme.of(context).colorScheme.error,
+          side: BorderSide(
+            color: Theme.of(context).colorScheme.error,
+            width: 1.5,
+          ),
+        ),
       ),
     );
   }
 
   Widget _adminRole() {
     return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-        side: const BorderSide(color: Colors.black, width: 2),
-      ),
       child: ExpansionTile(
-        shape: LinearBorder.none,
-        collapsedShape: LinearBorder.none,
-        leading: const Icon(Icons.group, size: 30),
+        leading: Icon(
+          Icons.group_rounded,
+          size: 28,
+          color: Theme.of(context).colorScheme.primary,
+        ),
         title: const Text(
           "Ruoli",
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 17),
         ),
         children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height / 2 - 175,
-            child: SingleChildScrollView(
-              child: Column(
-                children: listRoles
-                    .map((item) => _singleRole(item.name))
-                    .toList(),
-              ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height / 2 - 175,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: listRoles
+                          .map((item) => _singleRole(item.name))
+                          .toList(),
+                    ),
+                  ),
+                ),
+                _addRole(),
+              ],
             ),
           ),
-          _addRole(),
         ],
       ),
     );
@@ -90,37 +184,55 @@ class _SettingPageState extends State<SettingPage> {
 
   Widget _singleRole(String data) {
     return ListTile(
-      leading: const Icon(Icons.person, size: 28),
+      leading: Icon(
+        Icons.person_rounded,
+        size: 24,
+        color: Theme.of(context).colorScheme.primary,
+      ),
       title: Text(
         data,
-        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
       ),
     );
   }
 
   Widget _addRole() {
-    return ListTile(
-      leading: const Icon(Icons.person_add),
-      title: TextField(
-        decoration: const InputDecoration(labelText: "Aggiungi Ruolo"),
-        controller: roleController,
-      ),
-      trailing: IconButton(
-        onPressed: () async {
-          final text = roleController?.text.trim() ?? '';
-          if (text.isEmpty) return;
+    return Padding(
+      padding: const EdgeInsets.all(12),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              decoration: const InputDecoration(
+                labelText: "Aggiungi Ruolo",
+                isDense: true,
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 10,
+                ),
+              ),
+              controller: roleController,
+            ),
+          ),
+          const SizedBox(width: 8),
+          IconButton.filled(
+            onPressed: () async {
+              final text = roleController?.text.trim() ?? '';
+              if (text.isEmpty) return;
 
-          final (newRole, check) = await api.addRole(text);
-          if (check && newRole != null) {
-            setState(() {
-              listRoles
-                ..add(newRole)
-                ..sort((a, b) => a.name.compareTo(b.name));
-              roleController?.clear();
-            });
-          }
-        },
-        icon: const Icon(Icons.add, color: Colors.white),
+              final (newRole, check) = await api.addRole(text);
+              if (check && newRole != null) {
+                setState(() {
+                  listRoles
+                    ..add(newRole)
+                    ..sort((a, b) => a.name.compareTo(b.name));
+                  roleController?.clear();
+                });
+              }
+            },
+            icon: const Icon(Icons.add_rounded),
+          ),
+        ],
       ),
     );
   }

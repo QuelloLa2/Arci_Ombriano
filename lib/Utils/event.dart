@@ -48,4 +48,12 @@ class Event {
 
   @override
   String toString() => nameEvent;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Event && id != null && other.id != null && id == other.id;
+
+  @override
+  int get hashCode => id?.hashCode ?? super.hashCode;
 }

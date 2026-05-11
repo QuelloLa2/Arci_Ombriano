@@ -33,25 +33,55 @@ class _SignupPageState extends State<SignupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(50),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Benvenuto!",
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 40),
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Icon(
+                  Icons.person_add_outlined,
+                  size: 80,
+                  color: Color(0xFFC74E43),
+                ),
+                const SizedBox(height: 24),
+                const Text(
+                  "Benvenuto!",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 32,
+                    letterSpacing: -0.5,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  "Crea il tuo account",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Color(0xFF7B8284),
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                const SizedBox(height: 40),
+                _textField(
+                  "Nome e Cognome",
+                  _nameController,
+                  Icons.person_outline,
+                ),
+                const SizedBox(height: 16),
+                _textField("Email", _emailController, Icons.email_outlined),
+                const SizedBox(height: 24),
+                _button("Registrati"),
+                const SizedBox(height: 16),
+                _textButton("Hai già un account?"),
+                const SizedBox(height: 16),
+              ],
             ),
-            SizedBox(height: 10),
-            _textField("Nome e Cognome", _nameController),
-            SizedBox(height: 10),
-            _textField("Email", _emailController),
-            SizedBox(height: 10),
-            _button("Registrati"),
-            SizedBox(height: 10),
-            _textButton("Hai già un account?"),
-          ],
+          ),
         ),
       ),
     );
@@ -60,15 +90,8 @@ class _SignupPageState extends State<SignupPage> {
   Widget _button(String label) {
     return SizedBox(
       width: double.infinity,
-      height: 50,
+      height: 54,
       child: ElevatedButton(
-        style: ButtonStyle(
-          shape: WidgetStatePropertyAll<RoundedRectangleBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadiusGeometry.all(Radius.circular(18)),
-            ),
-          ),
-        ),
         onPressed: () async {
           if (_nameController.text.isEmpty || _emailController.text.isEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -91,29 +114,29 @@ class _SignupPageState extends State<SignupPage> {
               value: user.isAdmin.toString(),
             );
             widget.onLoginSuccess(user);
+            if (mounted) {
+              Navigator.of(context).popUntil((route) => route.isFirst);
+            }
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text("Email già registrata o dati non validi")),
             );
           }
         },
-        child: Text(
-          label,
-          textScaler: TextScaler.linear(2),
-          style: TextStyle(color: Theme.of(context).colorScheme.surface),
-        ),
+        child: Text(label),
       ),
     );
   }
 
-  Widget _textField(String label, TextEditingController controller) {
+  Widget _textField(
+    String label,
+    TextEditingController controller,
+    IconData icon,
+  ) {
     return TextField(
       controller: controller,
       decoration: InputDecoration(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-          gapPadding: 2.5,
-        ),
+        prefixIcon: Icon(icon, size: 20, color: const Color(0xFF7B8284)),
         labelText: label,
       ),
     );
@@ -123,13 +146,8 @@ class _SignupPageState extends State<SignupPage> {
     return Center(
       child: TextButton(
         onPressed: () => Navigator.pop(context),
-        child: Text(
-          label,
-          textAlign: TextAlign.center,
-          style: TextStyle(decoration: TextDecoration.underline),
-        ),
+        child: Text(label),
       ),
     );
   }
 }
-
