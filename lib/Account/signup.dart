@@ -68,7 +68,7 @@ class _SignupPageState extends State<SignupPage> {
                 ),
                 const SizedBox(height: 40),
                 _textField(
-                  "Nome e Cognome",
+                  "Nickname",
                   _nameController,
                   Icons.person_outline,
                 ),
